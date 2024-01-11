@@ -10,25 +10,35 @@ stages:
     # write tests that will allow to determine if features work, 
     #using curl or postman get xml file to send requests to appliacation
     #to-docker-hub:
-    #  stage: push-to-dockerhub
-    #  image: docker:latest
-    #  services:
-    #    - docker:dind
-    #  before_script:
-    #    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-    #  script:
-    #    - docker build --pull -t "$CI_REGISTRY_IMAGE" .
-    #    - docker push "$CI_REGISTRY_IMAGE"
-    #  only:
-    #    - master
+  - dockerize-webapp
+    # this step will asure to have image prepered before pushing it to docker hub
+
 build-webapp:
-    stage: build-webapp
-    image: maven:3.9.6-amazoncorretto-21-debian
-    before_script:
-      - apt update -y
-      - apt upgrade -y
-      - java --version
-      - mvn -v
-    script:
-      - mvn package 
+  stage: build-webapp
+  image: maven:3.9.6-amazoncorretto-21-debian
+  before_script:
+    - apt update -y
+    - apt upgrade -y
+    - java --version
+    - mvn -v
+  script:
+    - mvn package
+
+dockerize-webapp:
+  stage: dockerize-webapp
+  image: docker:latest
+  script:
+    - docker-compose --version
+
+push-to-dockerhub:
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - docker build --pull -t "$CI_REGISTRY_IMAGE" .
+    - docker push "$CI_REGISTRY_IMAGE"
+  only:
+    - master
 
