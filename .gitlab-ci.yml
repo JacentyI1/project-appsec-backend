@@ -28,8 +28,13 @@ build-webapp:
 dockerize-webapp:
   stage: dockerize-webapp
   image: docker:latest
-  script:
+  dependencies:
+    - build-webapp
+  before_script:
     - docker-compose --version
+  script:
+    - docker build .
+
 
 push-to-dockerhub:
   image: docker:latest
