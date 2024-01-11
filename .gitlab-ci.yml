@@ -27,7 +27,8 @@ build-webapp:
     before_script:
       - apt update -y
       - apt upgrade -y
-    script:
       - java --version
       - mvn -v
+    script:
+      - mvn package 
 
