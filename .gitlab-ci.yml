@@ -1,0 +1,32 @@
+stages: 
+  - push-to-dockerhub
+    #create env for building app without running it, 
+    #writing a dockerfile and posting finished image for dockerhub
+    #how to login to dockerhub and then post image
+  - build-webapp
+    # just run a docker compose file that will pull image created in previous step
+    # file will contain base application and database and put them in th same network 
+  - tests
+    # write tests that will allow to determine if features work, 
+    #using curl or postman get xml file to send requests to appliacation
+    #to-docker-hub:
+    #  stage: push-to-dockerhub
+    #  image: docker:latest
+    #  services:
+    #    - docker:dind
+    #  before_script:
+    #    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    #  script:
+    #    - docker build --pull -t "$CI_REGISTRY_IMAGE" .
+    #    - docker push "$CI_REGISTRY_IMAGE"
+    #  only:
+    #    - master
+build-webapp:
+    stage: build-webapp
+    image: maven:3.9.6-amazoncorretto-21-debian
+    before_script:
+      - apt update -y
+      - apt upgrade -y
+      - java --version
+      - mvn -v
+
