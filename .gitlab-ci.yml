@@ -1,17 +1,18 @@
 stages: 
+  - build-webapp
+    # just run a docker compose file that will pull image created in previous step
+    # file will contain base application and database and put them in th same network 
+  - dockerize-webapp
+    # this step will asure to have image prepered before pushing it to docker hub
   - push-to-dockerhub
     #create env for building app without running it, 
     #writing a dockerfile and posting finished image for dockerhub
     #how to login to dockerhub and then post image
-  - build-webapp
-    # just run a docker compose file that will pull image created in previous step
-    # file will contain base application and database and put them in th same network 
   - tests
     # write tests that will allow to determine if features work, 
     #using curl or postman get xml file to send requests to appliacation
     #to-docker-hub:
-  - dockerize-webapp
-    # this step will asure to have image prepered before pushing it to docker hub
+
 
 build-webapp:
   stage: build-webapp
