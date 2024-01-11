@@ -32,10 +32,10 @@ dockerize-webapp:
     - build-webapp
   before_script:
     - docker-compose --version
+    - docker info
   script:
-    - docker build - < Dockerfile
-
-
+    - docker build -t Dockerfile .
+    
 push-to-dockerhub:
   image: docker:latest
   stage: push-to-dockerhub
