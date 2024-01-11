@@ -32,6 +32,7 @@ dockerize-webapp:
 
 push-to-dockerhub:
   image: docker:latest
+  stage: push-to-dockerhub
   services:
     - docker:dind
   before_script:
