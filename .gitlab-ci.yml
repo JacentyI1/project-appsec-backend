@@ -33,7 +33,7 @@ dockerize-webapp:
   before_script:
     - docker-compose --version
   script:
-    - docker build
+    - docker build - < Dockerfile
 
 
 push-to-dockerhub:
