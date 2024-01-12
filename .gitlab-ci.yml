@@ -60,7 +60,7 @@ deploy-on-server:
   services:
     - docker:dind
   before_script:
-    - docker-compose --vesrion
+    - docker-compose --version
   script:
     - docker-compose up -d 
 
