@@ -27,7 +27,9 @@ build-webapp:
 
 dockerize-webapp:
   stage: dockerize-webapp
-  image: docker:dind
+  image: docker:latest
+  services:
+    - docker:dind
   dependencies:
     - build-webapp
   before_script:
