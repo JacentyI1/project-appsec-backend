@@ -24,6 +24,10 @@ build-webapp:
     - mvn -v
   script:
     - mvn package
+  artifacts:
+    paths:
+      - target
+
 
 dockerize-webapp:
   stage: dockerize-webapp
