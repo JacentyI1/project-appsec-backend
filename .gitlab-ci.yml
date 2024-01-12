@@ -8,12 +8,12 @@ stages:
     #create env for building app without running it, 
     #writing a dockerfile and posting finished image for dockerhub
     #how to login to dockerhub and then post image
+  - deploy-on-server
+
   - tests
     # write tests that will allow to determine if features work, 
     #using curl or postman get xml file to send requests to appliacation
     #to-docker-hub:
-
-
 build-webapp:
   stage: build-webapp
   image: maven:3.9.6-amazoncorretto-21-debian
@@ -27,20 +27,20 @@ build-webapp:
   artifacts:
     paths:
       - target
-
-
 dockerize-webapp:
   stage: dockerize-webapp
   image: docker:latest
+    # running docker image as an image on your gitlab runner requires two things
+    # 1. in runner configuration you need allow runner to be privelaged (more in gitlab docs)
+    # 2. in services you need to define docker:dind wich stands for Docker Inside Docker 
+    # example bellow \/
   services:
     - docker:dind
   dependencies:
     - build-webapp
   before_script:
-    - docker-compose --version
-    - docker info
+    - docker --version
   script:
-    - ls
     - docker build --pull -t "$CI_REGISTRY_IMAGE" .
     
 push-to-dockerhub:
@@ -53,6 +53,14 @@ push-to-dockerhub:
   script:
     - docker build --pull -t "$CI_REGISTRY_IMAGE" .
     - docker push "$CI_REGISTRY_IMAGE"
-  only:
-    - master
+
+deploy-on-server:
+  image: docker:latest
+  stage: deploy-on-server
+  services:
+    - docker:dind
+  before_script:
+    - docker-compose --vesrion
+  script:
+    - docker-compose up -d 
 

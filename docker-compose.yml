@@ -4,7 +4,20 @@ services:
   db:
     image: postgres
     ports:
-      - "5432:5432"
+      - "25432:5432"
     restart: always
     environment:
       POSTGRES_PASSWORD: changemeinprod!
+    networks:
+      - weeeee
+  app:
+    image: pepe911/webapp:latest
+    ports:
+      - "25433:8080"
+    networks:
+      - weeeee
+
+
+networks:
+  weeeee:
+    driver: bridge
