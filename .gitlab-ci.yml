@@ -36,6 +36,7 @@ dockerize-webapp:
     - docker-compose --version
     - docker info
   script:
+    - ls
     - docker build --pull -t "$CI_REGISTRY_IMAGE" .
     
 push-to-dockerhub:
