@@ -65,5 +65,7 @@ deploy-on-server:
     - docker pull pepe991/webapp:latest
     - docker images
   script:
-    - docker-compose up -d 
+    - docker-compose up -d
+  only:
+    - master 
 

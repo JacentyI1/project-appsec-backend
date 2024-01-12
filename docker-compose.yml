@@ -11,7 +11,7 @@ services:
     networks:
       - weeeee
   app:
-    image: pepe911/webapp:latest
+    image: pepe991/webapp:latest
     ports:
       - "25433:8080"
     networks:
