@@ -66,6 +66,12 @@ deploy-on-server:
     - docker images
   script:
     - docker-compose up -d
+    - mkdir logs/
+    - docker container webapp-db-1 logs >> logs/db.txt
+    - docker container webapp-app-1 logs >> logs/app.txt
+  artifacts:
+    paths:
+      - logs
   only:
     - master 
 
