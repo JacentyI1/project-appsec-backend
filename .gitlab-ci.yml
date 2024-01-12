@@ -67,6 +67,7 @@ deploy-on-server:
   script:
     - docker-compose up -d
     - mkdir logs/
+    - sleep 2m
     - docker container logs webapp-db-1 >> logs/db.txt
     - docker container logs webapp-app-1 >> logs/app.txt
   artifacts:
