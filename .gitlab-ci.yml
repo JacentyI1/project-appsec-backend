@@ -27,14 +27,14 @@ build-webapp:
 
 dockerize-webapp:
   stage: dockerize-webapp
-  image: docker:latest
+  image: docker:dind
   dependencies:
     - build-webapp
   before_script:
     - docker-compose --version
     - docker info
   script:
-    - docker build -t Dockerfile .
+    - docker build --pull -t "$CI_REGISTRY_IMAGE" .
     
 push-to-dockerhub:
   image: docker:latest
