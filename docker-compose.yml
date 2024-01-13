@@ -10,7 +10,7 @@ services:
   db:
     image: postgres
     ports:
-      - "25432:5432"
+      - "5432:5432"
     restart: always
     environment:
       POSTGRES_PASSWORD: changemeinprod!
