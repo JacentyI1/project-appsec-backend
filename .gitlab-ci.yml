@@ -23,7 +23,7 @@ build-webapp:
     - java --version
     - mvn -v
   script:
-    - mvn package
+    - mvn clean package
   artifacts:
     paths:
       - target

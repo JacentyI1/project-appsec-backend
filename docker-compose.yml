@@ -1,6 +1,12 @@
 version: '3.1'
 
 services:
+  app:
+    image: pepe991/webapp:latest
+    ports:
+      - "25433:8080"
+    networks:
+      - weeeee
   db:
     image: postgres
     ports:
@@ -10,12 +16,7 @@ services:
       POSTGRES_PASSWORD: changemeinprod!
     networks:
       - weeeee
-  app:
-    image: pepe991/webapp:latest
-    ports:
-      - "25433:8080"
-    networks:
-      - weeeee
+
 
 
 networks:
