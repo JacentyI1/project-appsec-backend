@@ -70,6 +70,7 @@ deploy-on-server:
     - sleep 2m
     - docker container logs webapp-db-1 >> logs/db.txt
     - docker container logs webapp-app-1 >> logs/app.txt
+    - cat logs/app.txt
   artifacts:
     paths:
       - logs
