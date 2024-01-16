@@ -20,5 +20,5 @@ public class PostEntity {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
-    private UserEntity author;
+    private UserEntity user;
 }
