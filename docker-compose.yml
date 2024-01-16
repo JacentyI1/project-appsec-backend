@@ -9,6 +9,7 @@ services:
       - weeeee
   db:
     image: postgres
+    hostname: webap-db-1
     ports:
       - "5432:5432"
     restart: always
