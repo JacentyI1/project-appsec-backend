@@ -24,7 +24,7 @@ public class PostController {
         this.postService = postService;
     }
 
-    @PutMapping(path = "/posts/{isbn}")
+    @PutMapping(path = "/v1/posts/{isbn}")
     public ResponseEntity<PostDto> createUpdatePost(
             @PathVariable("isbn") String isbn,
             @RequestBody PostDto postDto
@@ -40,13 +40,13 @@ public class PostController {
         }
     }
 
-    @GetMapping(path = "/posts")
+    @GetMapping(path = "/v1/posts")
     public List<PostDto> listPosts() {
         List<PostEntity> posts = postService.findAll();
         return posts.stream().map(postMapper::mapTo).collect(Collectors.toList());
     }
 
-    @GetMapping(path = "/posts/{isbn}")
+    @GetMapping(path = "/v1/posts/{isbn}")
     public ResponseEntity<PostDto> getBook(@PathVariable("isbn") String isbn) {
         Optional<PostEntity> foundBook = postService.findOne(isbn);
         return foundBook.map(bookEntity -> {
@@ -55,7 +55,7 @@ public class PostController {
         }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PatchMapping(path = "/posts/{isbn}")
+    @PatchMapping(path = "/v1/posts/{isbn}")
     public ResponseEntity<PostDto> partialUpdateBook(
             @PathVariable("isbn") String isbn,
             @RequestBody PostDto postDto
@@ -71,7 +71,7 @@ public class PostController {
                 HttpStatus.OK
         );
     }
-    @DeleteMapping(path = "/posts/{isbn}")
+    @DeleteMapping(path = "/v1/posts/{isbn}")
     public ResponseEntity deleteBook(@PathVariable("isbn") String isbn) {
         postService.delete(isbn);
         return new ResponseEntity(HttpStatus.NO_CONTENT);

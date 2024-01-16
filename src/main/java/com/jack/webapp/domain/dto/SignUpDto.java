@@ -1,6 +1,5 @@
 package com.jack.webapp.domain.dto;
 
-import com.jack.webapp.domain.entities.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,18 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserDto {
-
-    private Long id;
-
+public class SignUpDto {
     private String name;
-
-    private String username;
-
-    private String password;
-
+    private  String username;
     private String email;
-
-    private Role role;
-
+    private String password;
 }

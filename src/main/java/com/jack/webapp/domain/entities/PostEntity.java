@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "posts")
+@Table(name = "poosts")
 public class PostEntity {
     @Id
     private String postId;
@@ -20,5 +20,5 @@ public class PostEntity {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
-    private UserEntity author;
+    private UserEntity user;
 }

@@ -23,27 +23,27 @@ public class UserController {
         this.userMapper = userMapper;
     }
 
-    @PostMapping(path = "/users")
+    @PostMapping(path = "/v1/users")
     public ResponseEntity<UserDto> createUser(@RequestBody UserDto user) {
         UserEntity userEntity = userMapper.mapFrom(user);
         UserEntity savedUserEntity = userService.save(userEntity);
         return new ResponseEntity<>(userMapper.mapTo(savedUserEntity), HttpStatus.CREATED);
     }
 
-    @PostMapping(path = "/register")
+    @PostMapping(path = "/v1/register")
     public ResponseEntity<UserDto> registerUser(@RequestBody UserDto user) {
         UserEntity userEntity = userMapper.mapFrom(user);
         UserEntity savedUserEntity = userService.save(userEntity);
         return new ResponseEntity<>(userMapper.mapTo(savedUserEntity), HttpStatus.CREATED);
     }
 
-    @GetMapping(path = "/users")
+    @GetMapping(path = "/v1/users")
     public List<UserDto> listUsers() {
         List<UserEntity> users = userService.findAll();
         return users.stream().map(userMapper::mapTo).collect(Collectors.toList());
     }
 
-    @GetMapping(path = "/users/{id}")
+    @GetMapping(path = "/v1/users/{id}")
     public ResponseEntity<UserDto> getUser(@PathVariable("id") Long id) {
         Optional<UserEntity> foundUser = userService.findOne(id);
         return foundUser.map(userEntity -> {
@@ -52,7 +52,7 @@ public class UserController {
         }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping(path = "/users/{id}")
+    @PutMapping(path = "/v1/users/{id}")
     public ResponseEntity<UserDto> fullUpdateUser(@PathVariable("id") Long id,
                                                   @RequestBody UserDto userDto) {
         if(!userService.isExists(id)) {
@@ -68,7 +68,7 @@ public class UserController {
 
     }
 
-    @PatchMapping(path = "/user/{id}")
+    @PatchMapping(path = "/v1/user/{id}")
     public ResponseEntity<UserDto> partialUpdate(
             @PathVariable("id") Long id,
             @RequestBody UserDto  userDto
@@ -81,7 +81,7 @@ public class UserController {
         return new ResponseEntity<>(userMapper.mapTo(updatedUser), HttpStatus.OK);
     }
 
-    @DeleteMapping(path = "/users/{id}")
+    @DeleteMapping(path = "/v1/users/{id}")
     public ResponseEntity deleteUser(@PathVariable("id") Long id) {
         userService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
