@@ -5,6 +5,7 @@ import com.jack.webapp.repositories.UserRepository;
 import com.jack.webapp.services.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,11 +27,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserEntity> findAll() {
-        return StreamSupport.stream(
-                userRepository.findAll().spliterator(),
-                        false
-                ).collect(Collectors.toList()
-        );
+        return new ArrayList<>(userRepository.findAll());
     }
 
     @Override
@@ -47,7 +44,7 @@ public class UserServiceImpl implements UserService {
     public UserEntity partialUpdate(Long id, UserEntity userEntity) {
         userEntity.setId(id);
         return userRepository.findById(id).map(existingUser -> {
-            Optional.ofNullable(userEntity.getRole()).ifPresent(existingUser::setRole);
+            Optional.ofNullable(userEntity.getRoleEntities()).ifPresent(existingUser::setRoleEntities);
             Optional.ofNullable(userEntity.getUsername()).ifPresent(existingUser::setUsername);
             Optional.ofNullable(userEntity.getPassword()).ifPresent(existingUser::setPassword);
             return userRepository.save(existingUser);
