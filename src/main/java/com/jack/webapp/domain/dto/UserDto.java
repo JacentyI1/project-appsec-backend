@@ -1,6 +1,6 @@
 package com.jack.webapp.domain.dto;
 
-import com.jack.webapp.domain.entities.AppUserRole;
+import com.jack.webapp.domain.entities.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,6 +20,6 @@ public class UserDto {
 
     private String password;
 
-    private AppUserRole role;
+    private Role role;
 
 }
