@@ -1,10 +1,12 @@
-package com.jack.webapp.repositories;
+package com.jack.webapp.repositories.v1;
 
-import com.jack.webapp.domain.entities.UserEntity;
+import com.jack.webapp.domain.entities.v1.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+@Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findByEmail(String email);
     Optional<UserEntity> findByUsernameOrEmail(String username, String email);

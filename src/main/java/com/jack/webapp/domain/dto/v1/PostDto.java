@@ -1,4 +1,4 @@
-package com.jack.webapp.domain.dto;
+package com.jack.webapp.domain.dto.v1;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

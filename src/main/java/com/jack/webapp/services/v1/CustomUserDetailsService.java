@@ -1,7 +1,7 @@
-package com.jack.webapp.services;
+package com.jack.webapp.services.v1;
 
-import com.jack.webapp.domain.entities.UserEntity;
-import com.jack.webapp.repositories.UserRepository;
+import com.jack.webapp.domain.entities.v1.UserEntity;
+import com.jack.webapp.repositories.v1.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

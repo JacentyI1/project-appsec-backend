@@ -1,9 +1,8 @@
-package com.jack.webapp.services.impl;
+package com.jack.webapp.services.v1.impl;
 
-import com.jack.webapp.domain.entities.PostEntity;
-import com.jack.webapp.domain.entities.UserEntity;
-import com.jack.webapp.repositories.PostRepository;
-import com.jack.webapp.services.PostService;
+import com.jack.webapp.domain.entities.v1.PostEntity;
+import com.jack.webapp.repositories.v1.PostRepository;
+import com.jack.webapp.services.v1.PostService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -60,4 +59,9 @@ public class PostServiceImpl implements PostService {
     public void delete(String isbn) {
         postRepository.deleteById(isbn);
     }
+
+//    @Override
+//    public List<PostEntity> findAll(Pageable pageable) {
+//
+//    }
 }

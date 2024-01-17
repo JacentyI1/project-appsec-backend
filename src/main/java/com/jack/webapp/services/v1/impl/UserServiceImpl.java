@@ -1,15 +1,13 @@
-package com.jack.webapp.services.impl;
+package com.jack.webapp.services.v1.impl;
 
-import com.jack.webapp.domain.entities.UserEntity;
-import com.jack.webapp.repositories.UserRepository;
-import com.jack.webapp.services.UserService;
+import com.jack.webapp.domain.entities.v1.UserEntity;
+import com.jack.webapp.repositories.v1.UserRepository;
+import com.jack.webapp.services.v1.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 public class UserServiceImpl implements UserService {

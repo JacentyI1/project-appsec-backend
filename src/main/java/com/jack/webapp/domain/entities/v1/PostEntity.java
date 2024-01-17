@@ -1,4 +1,4 @@
-package com.jack.webapp.domain.entities;
+package com.jack.webapp.domain.entities.v1;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "poosts")
+@Table(name = "posts")
 public class PostEntity {
     @Id
     private String postId;

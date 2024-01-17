@@ -1,4 +1,4 @@
-package com.jack.webapp.config;
+package com.jack.webapp.config.v1;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

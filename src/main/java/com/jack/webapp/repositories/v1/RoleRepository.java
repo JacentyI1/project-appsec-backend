@@ -1,10 +1,12 @@
-package com.jack.webapp.repositories;
+package com.jack.webapp.repositories.v1;
 
-import com.jack.webapp.domain.entities.Role;
+import com.jack.webapp.domain.entities.v1.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+@Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {
     Optional<Role> findByName(String name);
 }

@@ -1,11 +1,13 @@
-package com.jack.webapp.services;
+package com.jack.webapp.services.v1;
 
-import com.jack.webapp.domain.entities.UserEntity;
+import com.jack.webapp.domain.entities.v1.UserEntity;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
+
+//    UserEntity registerUser()
 
     UserEntity save(UserEntity userEntity);
 

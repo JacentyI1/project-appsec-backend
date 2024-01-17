@@ -1,8 +1,7 @@
 package com.jack.webapp.mappers.impl;
 
-import com.jack.webapp.domain.dto.SignUpDto;
-import com.jack.webapp.domain.dto.UserDto;
-import com.jack.webapp.domain.entities.UserEntity;
+import com.jack.webapp.domain.dto.v1.UserDto;
+import com.jack.webapp.domain.entities.v1.UserEntity;
 import com.jack.webapp.mappers.Mapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
