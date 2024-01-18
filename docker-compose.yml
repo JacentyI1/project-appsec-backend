@@ -18,14 +18,14 @@ services:
 #    networks:
 #      - weeeee
 
-<<<<<<< HEAD
+
 
 #
 #networks:
 #  weeeee:
 #    driver: bridge
-=======
-networks:
-  weeeee:
-    driver: bridge
->>>>>>> 1f715aa807e5ecf87c8adb3a0387317c0ab3ad92
+#
+#networks:
+#  weeeee:
+#    driver: bridge
+

@@ -1,13 +1,13 @@
 package com.jack.webapp.mappers.impl;
 
-import com.jack.webapp.domain.dto.v1.UserDto;
-import com.jack.webapp.domain.entities.v1.UserEntity;
+import com.jack.webapp.domain.dto.RegisterUserDto;
+import com.jack.webapp.domain.entities.UserEntity;
 import com.jack.webapp.mappers.Mapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserMapper implements Mapper<UserEntity, UserDto> {
+public class UserMapper implements Mapper<UserEntity, RegisterUserDto> {
 
     private ModelMapper modelMapper;
 
@@ -16,12 +16,12 @@ public class UserMapper implements Mapper<UserEntity, UserDto> {
     }
 
     @Override
-    public UserDto mapTo(UserEntity userEntity) {
-        return modelMapper.map(userEntity, UserDto.class);
+    public RegisterUserDto mapTo(UserEntity userEntity) {
+        return modelMapper.map(userEntity, RegisterUserDto.class);
     }
 
     @Override
-    public UserEntity mapFrom(UserDto userDto) {
-        return modelMapper.map(userDto, UserEntity.class);
+    public UserEntity mapFrom(RegisterUserDto registerUserDto) {
+        return modelMapper.map(registerUserDto, UserEntity.class);
     }
 }

@@ -1,16 +1,6 @@
 package com.jack.webapp.controllers;
 
-import com.jack.webapp.domain.dto.UserDto;
-import com.jack.webapp.domain.entities.UserEntity;
-import com.jack.webapp.mappers.Mapper;
-import com.jack.webapp.services.UserService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 public class UserController {

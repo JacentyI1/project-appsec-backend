@@ -1,4 +1,4 @@
-package com.jack.webapp.services.v1;
+package com.jack.webapp.services;
 
 
 public interface EmailSenderService {

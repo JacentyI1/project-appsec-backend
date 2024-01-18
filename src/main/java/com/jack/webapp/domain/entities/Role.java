@@ -1,4 +1,4 @@
-package com.jack.webapp.domain.entities.v1;
+package com.jack.webapp.domain.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;

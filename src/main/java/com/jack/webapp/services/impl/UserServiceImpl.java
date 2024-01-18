@@ -1,8 +1,8 @@
-package com.jack.webapp.services.v1.impl;
+package com.jack.webapp.services.impl;
 
-import com.jack.webapp.domain.entities.v1.UserEntity;
-import com.jack.webapp.repositories.v1.UserRepository;
-import com.jack.webapp.services.v1.UserService;
+import com.jack.webapp.domain.entities.UserEntity;
+import com.jack.webapp.repositories.UserRepository;
+import com.jack.webapp.services.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -42,8 +42,8 @@ public class UserServiceImpl implements UserService {
     public UserEntity partialUpdate(Long id, UserEntity userEntity) {
         userEntity.setId(id);
         return userRepository.findById(id).map(existingUser -> {
-            Optional.ofNullable(userEntity.getRoleEntities()).ifPresent(existingUser::setRoleEntities);
-            Optional.ofNullable(userEntity.getUsername()).ifPresent(existingUser::setUsername);
+//            Optional.ofNullable(userEntity.getRoleEntities()).ifPresent(existingUser::setRoleEntities);
+            Optional.ofNullable(userEntity.getUsername()).ifPresent(existingUser::setEmail);
             Optional.ofNullable(userEntity.getPassword()).ifPresent(existingUser::setPassword);
             return userRepository.save(existingUser);
         }).orElseThrow(()-> new RuntimeException("Author does not exist"));

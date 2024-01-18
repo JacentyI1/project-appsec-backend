@@ -1,6 +1,6 @@
-package com.jack.webapp.repositories.v1;
+package com.jack.webapp.repositories;
 
-import com.jack.webapp.domain.entities.v1.Role;
+import com.jack.webapp.domain.entities.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

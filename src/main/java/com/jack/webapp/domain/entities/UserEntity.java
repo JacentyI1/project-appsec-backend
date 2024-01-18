@@ -1,10 +1,7 @@
-package com.jack.webapp.domain.entities.v1;
+package com.jack.webapp.domain.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,22 +13,30 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
 @Table(name = "users", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"username"}),
         @UniqueConstraint(columnNames = {"email"})
 })
 public class UserEntity implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(nullable = false)
     private Long id;
 
-    private String name;
+    @Column(nullable = false)
+    private String fullName;
 
-    private String username;
-
-    private String password;
-
+    @Column(unique = true, length = 100, nullable = false)
     private String email;
+
+    @Getter
+    @Column(nullable = false)
+    private String password;
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
@@ -41,17 +46,8 @@ public class UserEntity implements UserDetails {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-<<<<<<< HEAD:src/main/java/com/jack/webapp/domain/entities/v1/UserEntity.java
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    private Set<Role> roles;
-=======
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
-    )
-    private Set<Role> roleEntities;
+
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -59,13 +55,8 @@ public class UserEntity implements UserDetails {
     }
 
     @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override
@@ -87,6 +78,4 @@ public class UserEntity implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
->>>>>>> 1f715aa807e5ecf87c8adb3a0387317c0ab3ad92:src/main/java/com/jack/webapp/domain/entities/UserEntity.java
 }

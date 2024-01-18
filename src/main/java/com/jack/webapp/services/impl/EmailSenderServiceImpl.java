@@ -1,6 +1,6 @@
-package com.jack.webapp.services.v1.impl;
+package com.jack.webapp.services.impl;
 
-import com.jack.webapp.services.v1.EmailSenderService;
+import com.jack.webapp.services.EmailSenderService;
 import lombok.extern.java.Log;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;

@@ -1,6 +1,6 @@
-package com.jack.webapp.services.v1;
+package com.jack.webapp.services;
 
-import com.jack.webapp.domain.entities.v1.UserEntity;
+import com.jack.webapp.domain.entities.UserEntity;
 
 import java.util.List;
 import java.util.Optional;
