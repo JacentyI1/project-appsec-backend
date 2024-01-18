@@ -20,4 +20,10 @@ public interface UserService {
     UserEntity partialUpdate(Long id, UserEntity userEntity);
 
     void delete(Long id);
+
+    boolean verifyUser(Long id, Long postId);
+
+    boolean resetPassword(String emailAddress);
+
+    boolean updatePassword(String address, String newPass, String confirmPass);
 }

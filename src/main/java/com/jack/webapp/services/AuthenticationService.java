@@ -16,4 +16,6 @@ public interface AuthenticationService {
     UserEntity authenticate(LoginUserDto loginUserDto);
 
     void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException;
+
+    boolean verifyUser(Long id, Long postId);
 }

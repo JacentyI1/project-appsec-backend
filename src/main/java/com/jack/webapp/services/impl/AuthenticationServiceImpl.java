@@ -37,6 +37,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserService userService;
     private final TokenRepository tokenRepository;
 
+
     @Override
     public UserEntity signup(RegisterUserDto input) {
         UserEntity user = UserEntity.builder()
@@ -81,6 +82,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
             }
         }
+    }
+
+    public void sendVerificationMail(String email, String pass, Long id){
+
+    }
+
+// Placeholder
+    @Override
+    public boolean verifyUser(Long id, Long postId) {
+        return userService.verifyUser(id, postId);
     }
 
     private void saveCustomerToken(UserEntity user, String accessToken) {

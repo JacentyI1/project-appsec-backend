@@ -71,7 +71,7 @@
 <div class="user-panel">
     <h1>User Panel</h1>
     <ul class="post-list">
-        <li th:each="post : ${posts}" class="post-item">
+        <li th:each="post : ${/api/posts}" class="post-item">
             <span th:text="${post.title}"></span>
             <span th:text="${post.content}"></span>
         </li>
