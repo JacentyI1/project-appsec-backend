@@ -4,7 +4,11 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -17,14 +21,17 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    @Value("${application.security.jwt.secret-key}")
-    private String secretKey;
+    @Autowired
+    private Environment env;
+//    env.getProperty("jwt.secret")
 
-    @Value("${application.security.jwt.expiration}")
-    private Long jwtExpiration;
+//    @Value(value = "${application.security.jwt.secret-key}")
 
-    @Value("${application.security.jwt.refresh-token.expiration}")
-    private Long refreshExpiration;
+//    @Value("${application.security.jwt.expiration}")
+//    private Long jwtExpiration;
+//
+//    @Value("${application.security.jwt.refresh-token.expiration}")
+//    private Long refreshExpiration;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -40,11 +47,11 @@ public class JwtService {
     }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        return buildToken(extraClaims, userDetails, jwtExpiration);
+        return buildToken(extraClaims, userDetails, getExpiration());
     }
 
     public String generateRefreshToken(UserDetails userDetails) {
-        return buildToken(new HashMap<>(), userDetails, refreshExpiration);
+        return buildToken(new HashMap<>(), userDetails, getRefresh());
     }
 
     public String buildToken(Map<String,Object> extraClaims, UserDetails userDetails, long expiration) {
@@ -87,11 +94,21 @@ public class JwtService {
     }
 
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        byte[] keyBytes = Decoders.BASE64.decode(getSecretKey());
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public Long getExpirationTime() {
-        return jwtExpiration;
+//    public Long getExpirationTime() {
+//        return getExpiration();
+//    }
+
+    public String getSecretKey(){
+        return env.getProperty("application.security.jwt.secret-key");
+    }
+    public Long getExpiration(){
+        return Long.valueOf(env.getProperty("application.security.jwt.expiration"));
+    }
+    public Long getRefresh(){
+        return Long.valueOf(env.getProperty("application.security.jwt.refresh-token.expiration"));
     }
 }

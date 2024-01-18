@@ -11,18 +11,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Entity
-@Getter
 @Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Setter
-@Table(name = "users", uniqueConstraints = {
+@Table(name = "users"/*, uniqueConstraints = {
         @UniqueConstraint(columnNames = {"username"}),
         @UniqueConstraint(columnNames = {"email"})
-})
+}*/)
 public class UserEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -32,7 +30,7 @@ public class UserEntity implements UserDetails {
     @Column(nullable = false)
     private String fullName;
 
-    @Column(unique = true, length = 100, nullable = false)
+    @Column(length = 100, nullable = false)
     private String email;
 
     @Getter

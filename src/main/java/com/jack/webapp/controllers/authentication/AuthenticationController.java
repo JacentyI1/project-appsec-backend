@@ -42,7 +42,7 @@ public class AuthenticationController {
 
         LoginResponse loginResponse = LoginResponse.builder()
                 .token(jwtToken)
-                .expiresIn(jwtService.getExpirationTime()).build();
+                .expiresIn(jwtService.getExpiration()).build();
         return new ResponseEntity<>(loginResponse, HttpStatus.ACCEPTED);
     }
 

@@ -1,5 +1,6 @@
 package com.jack.webapp.token;
 
+
 import com.jack.webapp.domain.entities.UserEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

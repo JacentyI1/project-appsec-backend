@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final EmailSenderService senderService;
+    private final EmailSenderService emailSenderService;
 
     @Override
     public UserEntity save(UserEntity userEntity) {
@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
     private void sendResetPasswordEmail(String emailAddress, JwtService token) {
         String subject = "Reset your Password";
         String message = "Your temporary password is:"+token;
-        senderService.sendMail(emailAddress, subject, message);
+        emailSenderService.sendMail(emailAddress, subject, message);
     }
 
     @Override
