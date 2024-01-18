@@ -1,16 +1,17 @@
-package com.jack.webapp.controllers;
+package com.jack.webapp.controllers.authentication;
 
 import com.jack.webapp.domain.dto.LoginUserDto;
 import com.jack.webapp.domain.dto.RegisterUserDto;
 import com.jack.webapp.domain.entities.UserEntity;
 import com.jack.webapp.services.AuthenticationService;
 import com.jack.webapp.services.JwtService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -41,6 +42,12 @@ public class AuthenticationController {
                 .expiresIn(jwtService.getExpirationTime()).build();
         return new ResponseEntity<>(loginResponse, HttpStatus.ACCEPTED);
     }
+
+    @PostMapping("/refresh-jwt")
+    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        authenticationService.refreshToken(request, response);
+    }
+
 
 
 }

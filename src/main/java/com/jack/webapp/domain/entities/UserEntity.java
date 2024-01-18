@@ -1,5 +1,6 @@
 package com.jack.webapp.domain.entities;
 
+import com.jack.webapp.token.Token;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -45,6 +46,13 @@ public class UserEntity implements UserDetails {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Date updatedAt;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @OneToMany(mappedBy = "user")
+    private List<Token> tokens;
 
 
 

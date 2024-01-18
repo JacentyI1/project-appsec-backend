@@ -1,10 +1,40 @@
 package com.jack.webapp.controllers;
 
-import org.springframework.web.bind.annotation.*;
+import com.jack.webapp.domain.entities.UserEntity;
+import com.jack.webapp.services.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
+@RequestMapping("/api/users")
 public class UserController {
-//    private UserService userService;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserEntity> authenticatedUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserEntity currentUser = (UserEntity) authentication.getPrincipal();
+        return new ResponseEntity<>(currentUser, HttpStatus.OK);
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<List<UserEntity>> allUsers() {
+        List<UserEntity> users = userService.findAll();
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    //    private UserService userService;
 //
 //    private Mapper<UserEntity, UserDto> userMapper;
 //

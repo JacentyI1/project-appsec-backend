@@ -2,7 +2,6 @@ package com.jack.webapp.token;
 
 import com.jack.webapp.domain.entities.UserEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,13 +21,15 @@ public class Token {
     private String token;
 
     @Enumerated(EnumType.STRING)
-    private TokenState tokenState = TokenState.BEARER;
+    private TokenType tokenType = TokenType.BEARER;
 
+    // Imho, bad practice! :D
     private boolean annulled;
+
 //    private boolean revoked;
 //    private boolean expired;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     public UserEntity user;
 

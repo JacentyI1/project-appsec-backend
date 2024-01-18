@@ -1,6 +1,6 @@
 package com.jack.webapp.token;
 
-public enum TokenState {
+public enum TokenType {
     BEARER,
     RESET
 }

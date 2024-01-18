@@ -13,7 +13,7 @@ public interface TokenRepository extends JpaRepository<Token, Long> {
             on t.user.id = u.id\s
             where u.id = :id and (t.annulled = false)\s
             """)
-    List<Token> findAllValidTokenByCustomer(Integer id);
+    List<Token> findAllValidTokenByCustomer(Long id);
 
     Optional<Token> findByToken(String token);
 }

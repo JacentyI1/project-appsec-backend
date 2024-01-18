@@ -1,4 +1,4 @@
-package com.jack.webapp.controllers;
+package com.jack.webapp.controllers.authentication;
 
 import lombok.*;
 
