@@ -2,8 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
+<!--    <link rel="stylesheet" type="text/html" th:href="@{http://localhost:8080/}"/>-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Registration Form</title>
+    <title>signup</title>
     <style>
         body {
             display: flex;
@@ -46,7 +47,7 @@
     </style>
 </head>
 <body>
-<form th:action="@{/api/auth/signup}" method="post">
+<form th:action="@{/signup}" method="post">
     <h1>Registration Form</h1>
 
     <label for="username">Username:</label>

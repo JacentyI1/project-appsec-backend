@@ -94,11 +94,8 @@ public class AuthenticationController {
             while ((line = reader.readLine()) != null) {
                 output.append(line).append("\n");
             }
-
-            // Wait for the process to finish
             int exitCode = process.waitFor();
 
-            // You can handle the exit code as needed
             if (exitCode == 0) {
                 return "Go script executed successfully. Output:\n" + output.toString();
             } else {
