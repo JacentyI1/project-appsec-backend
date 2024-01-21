@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +21,7 @@ import java.security.Principal;
 import java.util.List;
 
 @Log
-@RestController
+@Controller
 @RequestMapping("/api/users")
 public class UserController {
     private final UserService userService;
@@ -33,16 +35,16 @@ public class UserController {
     }
 
     @GetMapping("/account")
-    public ResponseEntity<?> authenticatedUser(){
+    public String authenticatedUser(Model model){
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             UserEntity user = (UserEntity) authentication.getPrincipal();
-//            LoginUserDto loggedInUser = loggedInMapper.mapTo(user);
             UserAccountResponseDto loggedInUser = accountMapper.mapTo(user);
-            return new ResponseEntity<>(loggedInUser, HttpStatus.OK);
+            model.addAttribute("user", loggedInUser);
+            return "userAccount";
         } catch (Exception e) {
-            log.info("Access denied\n" + "Exception: " + e.getMessage());
-            return new ResponseEntity<>("Access denied", HttpStatus.UNAUTHORIZED);
+            log.info("Access denied. User not found.\n" + "Exception: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null).toString();
         }
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //        UserEntity currentUser = (UserEntity) authentication.getPrincipal();

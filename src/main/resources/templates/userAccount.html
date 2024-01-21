@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Account</title>
+</head>
+<body>
+    <h1>User Account</h1>
+    <table>
+        <tr>
+<!--            private String username;-->
+<!--            private String fullName;-->
+<!--            private String email;-->
+<!--            private Date createdAt;-->
+<!--            private Role role;-->
+<!--            private boolean isActive;-->
+            <th>Username</th>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Created at</th>
+            <th>Role</th>
+            <th>Active</th>
+        </tr>
+        <tr>
+            <td th:text="${user.username}"></td>
+            <td th:text="${user.fullName}"></td>
+            <td th:text="${user.email}"></td>
+            <td th:text="${user.createdAt}"></td>
+            <td th:text="${user.role}"></td>
+            <td th:text="${user.isActive()}"></td>
+            <!-- Add more cells as needed -->
+        </tr>
+    </table>
+</body>
+</html>

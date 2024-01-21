@@ -27,7 +27,6 @@ public class AuthenticationController {
     private final Mapper<UserEntity, LoginUserDto> loginMapper;
 
 
-
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody RegisterUserDto registerUserDto) {
         return authenticationService.signup(signupMapper.mapFrom(registerUserDto));
