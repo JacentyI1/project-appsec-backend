@@ -1,8 +1,8 @@
 package com.jack.webapp.services.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jack.webapp.controllers.authentication.AuthenticationRequest;
 import com.jack.webapp.controllers.authentication.AuthenticationResponse;
+import com.jack.webapp.domain.dto.LoginUserDto;
 import com.jack.webapp.domain.entities.UserEntity;
 import com.jack.webapp.repositories.TokenRepository;
 import com.jack.webapp.repositories.UserRepository;
@@ -54,27 +54,28 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setActive(false); // set active to false
 
         userRepository.save(user); // save user
-        sendVerificationMail(user.getEmail(), user.getVerificationCode(), user.getId());
+        // uncomment when email service works xd
+//        sendVerificationMail(user.getEmail(), user.getVerificationCode(), user.getId());
         return new ResponseEntity<String>("Account created. Check e-mail.", HttpStatus.CREATED);
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public AuthenticationResponse authenticate(LoginUserDto request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmailAddress(),
+                        request.getEmail(),
                         request.getPassword()
                 )
         );
-        var user = userRepository.findByEmail(request.getEmailAddress()).orElseThrow();
+        UserEntity user = userRepository.findByEmail(request.getEmail()).orElseThrow();
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
         revokeAllCustomerTokens(user);
-        saveCustomerToken(user, jwtToken);
+        saveUserToken(user, jwtToken);
         return AuthenticationResponse.builder()
+//                .email(user.getEmail())
                 .accessToken(jwtToken)
-                .refreshToken(jwtToken)
+                .refreshToken(refreshToken)
                 .build();
-
     }
 
     @Override
@@ -86,11 +87,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         refreshToken = authHeader.substring(7);
         email = jwtService.extractUsername(refreshToken);
         if(email != null) {
-            var customer = this.userRepository.findByEmail(email).orElseThrow();
-            if(jwtService.isTokenValid(refreshToken, customer)) {
-                var accessToken = jwtService.generateToken(customer);
-                revokeAllCustomerTokens(customer);
-                saveCustomerToken(customer, accessToken);
+            var user = this.userRepository.findByEmail(email).orElseThrow();
+            if(jwtService.isTokenValid(refreshToken, user)) {
+                var accessToken = jwtService.generateToken(user);
+                revokeAllCustomerTokens(user);
+                saveUserToken(user, accessToken);
                 var authResponse = AuthenticationResponse.builder()
                         .accessToken(accessToken)
                         .refreshToken(refreshToken)
@@ -112,7 +113,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return userService.verifyUser(id, postId);
     }
 
-    private void saveCustomerToken(UserEntity user, String accessToken) {
+    private void saveUserToken(UserEntity user, String accessToken) {
         var token = Token.builder()
                 .user(user)
                 .token(accessToken)

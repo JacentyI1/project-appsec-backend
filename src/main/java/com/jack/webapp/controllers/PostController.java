@@ -1,11 +1,60 @@
 package com.jack.webapp.controllers;
 
+import com.jack.webapp.domain.dto.PostDto;
+import com.jack.webapp.domain.entities.PostEntity;
+import com.jack.webapp.mappers.Mapper;
+import com.jack.webapp.services.PostService;
+import lombok.extern.java.Log;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Log
 @RestController
 public class PostController {
+    private Mapper<PostEntity, PostDto> postMapper;
+    private PostService postService;
 
-//    private Mapper<PostEntity, PostDto> postMapper;
+    public PostController(Mapper<PostEntity, PostDto> postMapper, PostService postService) {
+        this.postMapper = postMapper;
+        this.postService = postService;
+    }
+
+    @PostMapping("/api/post/create-post")
+    public ResponseEntity<String> runGoScript() {
+        try {
+            //
+            ProcessBuilder processBuilder = new ProcessBuilder("go", "run", "src/main/resources/go/main.go");
+            Process process = processBuilder.start();
+            int exitCode = process.waitFor();
+            if (exitCode == 0) {
+                String filePath = "src/main/resources/go/out.txt";
+                String content = new String(Files.readAllBytes(Paths.get(filePath)));
+                log.info("Generated content: "+ content);
+
+                return new ResponseEntity<>("Successfully executed message-generating script", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Error in executing message-generating script", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error in executing message-generating script", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/api/posts")
+    public ResponseEntity<List<PostDto>> listPosts(){
+        List<PostEntity> posts = postService.findAll();
+        return new ResponseEntity<>(posts.stream().map(postMapper::mapTo).collect(Collectors.toList()), HttpStatus.OK);
+    }
+
+    //    private Mapper<PostEntity, PostDto> postMapper;
 //
 //    private PostService postService;
 //

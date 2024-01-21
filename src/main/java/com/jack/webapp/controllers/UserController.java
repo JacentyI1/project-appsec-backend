@@ -1,9 +1,11 @@
 package com.jack.webapp.controllers;
 
 import com.jack.webapp.domain.dto.LoginUserDto;
+import com.jack.webapp.domain.dto.UserAccountResponseDto;
 import com.jack.webapp.domain.entities.UserEntity;
 import com.jack.webapp.mappers.Mapper;
 import com.jack.webapp.services.UserService;
+import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -16,25 +18,31 @@ import org.springframework.web.bind.annotation.RestController;
 import java.security.Principal;
 import java.util.List;
 
+@Log
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
     private final UserService userService;
     private final Mapper<UserEntity, LoginUserDto> loggedInMapper;
-    public UserController(UserService userService, Mapper<UserEntity, LoginUserDto> loggedInMapper) {
+
+    private final Mapper<UserEntity, UserAccountResponseDto> accountMapper;
+    public UserController(UserService userService, Mapper<UserEntity, LoginUserDto> loggedInMapper, Mapper<UserEntity, UserAccountResponseDto> accountMapper) {
         this.userService = userService;
         this.loggedInMapper = loggedInMapper;
+        this.accountMapper = accountMapper;
     }
 
     @GetMapping("/account")
-    public ResponseEntity<LoginUserDto> authenticatedUser(Principal principal){
+    public ResponseEntity<?> authenticatedUser(){
         try {
-            UserEntity user = userService.findOne(principal.getName());
-            LoginUserDto loggedInUser = loggedInMapper.mapTo(user);
-            loggedInUser.setPassword(null);
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            UserEntity user = (UserEntity) authentication.getPrincipal();
+//            LoginUserDto loggedInUser = loggedInMapper.mapTo(user);
+            UserAccountResponseDto loggedInUser = accountMapper.mapTo(user);
             return new ResponseEntity<>(loggedInUser, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            log.info("Access denied\n" + "Exception: " + e.getMessage());
+            return new ResponseEntity<>("Access denied", HttpStatus.UNAUTHORIZED);
         }
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //        UserEntity currentUser = (UserEntity) authentication.getPrincipal();

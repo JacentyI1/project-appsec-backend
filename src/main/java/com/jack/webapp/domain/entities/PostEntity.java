@@ -18,10 +18,9 @@ public class PostEntity {
     @Column(nullable = false)
     private Long postId;
 
-
     private String post;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "user_id")
+//    private UserEntity user;
 }

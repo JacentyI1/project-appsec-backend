@@ -78,12 +78,7 @@ public class JwtService {
 //                .compact();
 //    }
 
-    /**
-     * Validate token
-     * @param token
-     * @param userDetails
-     * @return boolean of weather the token is valid or not
-    * */
+
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
@@ -133,7 +128,7 @@ public class JwtService {
         return Long.valueOf(env.getProperty("application.security.jwt.refresh-token.expiration"));
     }
 
-    public Object generateRefreshToken(UserEntity user) {
+    public String generateRefreshToken(UserEntity user) {
         return buildToken(new HashMap<>(), user, getRefresh());
     }
 }

@@ -34,7 +34,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public  ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest request) throws Exception {
+    public  ResponseEntity<AuthenticationResponse> login(@RequestBody LoginUserDto request) throws Exception {
         return new ResponseEntity<>(authenticationService.authenticate(request), HttpStatus.OK); // map dto to entity & authenticate
 
     }
@@ -51,6 +51,8 @@ public class AuthenticationController {
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Verification failed");
     }
+
+
 
 //    @PostMapping("/forgot-password")
 //    public ResponseEntity<?> forgotPassword(@RequestBody AuthenticationRequest request) {
