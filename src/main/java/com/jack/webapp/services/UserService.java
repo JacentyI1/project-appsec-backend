@@ -23,7 +23,9 @@ public interface UserService {
 
     boolean verifyUser(Long id, Long postId);
 
-    boolean resetPassword(String emailAddress);
+//    boolean resetPassword(String emailAddress);
 
     boolean updatePassword(String address, String newPass, String confirmPass);
+
+    UserEntity findOne(String name);
 }

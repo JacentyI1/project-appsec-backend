@@ -17,10 +17,9 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "users"/*, uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"username"}),
+@Table(name = "users", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"email"})
-}*/)
+})
 public class UserEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -29,6 +28,9 @@ public class UserEntity implements UserDetails {
 
     @Column(nullable = false)
     private String fullName;
+
+    @Column(nullable = false)
+    private String username;
 
     @Column(length = 100, nullable = false)
     private String email;
@@ -52,12 +54,15 @@ public class UserEntity implements UserDetails {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<Token> tokens;
 
+    @Column(name = "verification_code")
+    private String verificationCode;
 
-
+    @Column(name = "is_active")
+    private boolean isActive;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return role.getAuthorities();
     }
 
     @Override

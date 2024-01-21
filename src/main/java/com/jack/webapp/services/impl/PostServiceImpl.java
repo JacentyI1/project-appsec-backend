@@ -18,10 +18,7 @@ public class PostServiceImpl implements PostService {
         this.postRepository = postRepository;
     }
 
-    @Override
-    public void savePost(PostEntity post) {
 
-    }
 
     @Override
     public boolean isExists(Long post_id) {

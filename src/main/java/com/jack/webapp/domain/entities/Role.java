@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.jack.webapp.domain.entities.Authority.*;
+import static com.jack.webapp.domain.entities.Permission.*;
 
 @Getter
 @RequiredArgsConstructor
@@ -24,12 +24,12 @@ public enum Role {
             )
     );
 
-    private final Set<Authority> permissions;
+    private final Set<Permission> permissions;
 
     public List<SimpleGrantedAuthority> getAuthorities() {
         var authorities = getPermissions()
                 .stream()
-                .map(authority -> new SimpleGrantedAuthority(authority.getAuthority()))
+                .map(permission -> new SimpleGrantedAuthority(permission.getAuthority()))
                 .collect(Collectors.toList());
         authorities.add(new SimpleGrantedAuthority("ROLE_" + this.name()));
         return authorities;

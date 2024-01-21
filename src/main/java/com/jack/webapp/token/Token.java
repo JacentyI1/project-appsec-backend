@@ -24,11 +24,9 @@ public class Token {
     @Enumerated(EnumType.STRING)
     private TokenType tokenType = TokenType.BEARER;
 
-    // Imho, bad practice! :D
-    private boolean annulled;
 
-//    private boolean revoked;
-//    private boolean expired;
+    private boolean revoked;
+    private boolean expired;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

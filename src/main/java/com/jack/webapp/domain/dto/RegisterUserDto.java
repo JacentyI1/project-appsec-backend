@@ -10,7 +10,13 @@ import lombok.*;
 @Data
 public class RegisterUserDto {
 
+//    private Long id;
     private String password;
     private String fullName;
+    private String username;
     private String email;
+    private Role role= Role.USER;
+//    private List<Token> tokens;
+//    private String verificationCode;
+//    private boolean isActive;
 }

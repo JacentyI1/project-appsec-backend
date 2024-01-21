@@ -1,14 +1,13 @@
 package com.jack.webapp.services.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jack.webapp.controllers.authentication.AuthenticationRequest;
 import com.jack.webapp.controllers.authentication.AuthenticationResponse;
-import com.jack.webapp.domain.dto.LoginUserDto;
-import com.jack.webapp.domain.dto.RegisterUserDto;
-import com.jack.webapp.domain.entities.Role;
 import com.jack.webapp.domain.entities.UserEntity;
 import com.jack.webapp.repositories.TokenRepository;
 import com.jack.webapp.repositories.UserRepository;
 import com.jack.webapp.services.AuthenticationService;
+import com.jack.webapp.services.EmailSenderService;
 import com.jack.webapp.services.JwtService;
 import com.jack.webapp.services.UserService;
 import com.jack.webapp.token.Token;
@@ -25,40 +24,57 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final UserService userService;
     private final TokenRepository tokenRepository;
+    private final EmailSenderService emailSenderService;
+    private final PasswordEncoder passwordEncoder;
 
 
     @Override
-    public UserEntity signup(RegisterUserDto input) {
-        UserEntity user = UserEntity.builder()
-                .fullName(input.getFullName())
-                .email(input.getEmail())
-                .password(passwordEncoder.encode(input.getPassword()))
-                .role(Role.USER)
-                .build();
-        return userRepository.save(user);
+    public ResponseEntity<String> signup(UserEntity user) {
+        Optional<UserEntity> existingUser = userRepository.findByEmail(user.getEmail()); // check if user exists
+        if(existingUser.isPresent()) return new ResponseEntity<String>("An account with this email already exists.", HttpStatus.CONFLICT); // return conflict if user exists
+
+        user.setPassword(passwordEncoder.encode(user.getPassword())); // encode password
+        user.setCreatedAt(new Date()); // set created at
+
+        String verificationCode = jwtService.buildToken(new HashMap<>(), user, -1L); // build token
+        user.setVerificationCode(verificationCode); // set verification code
+
+        user.setActive(false); // set active to false
+
+        userRepository.save(user); // save user
+        sendVerificationMail(user.getEmail(), user.getVerificationCode(), user.getId());
+        return new ResponseEntity<String>("Account created. Check e-mail.", HttpStatus.CREATED);
     }
 
-    public UserEntity authenticate(LoginUserDto input) {
+    public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        input.getEmail(),
-                        input.getPassword()
+                        request.getEmailAddress(),
+                        request.getPassword()
                 )
         );
+        var user = userRepository.findByEmail(request.getEmailAddress()).orElseThrow();
+        var jwtToken = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
+        revokeAllCustomerTokens(user);
+        saveCustomerToken(user, jwtToken);
+        return AuthenticationResponse.builder()
+                .accessToken(jwtToken)
+                .refreshToken(jwtToken)
+                .build();
 
-        return userRepository.findByEmail(input.getEmail())
-                .orElseThrow();
     }
 
     @Override
@@ -85,7 +101,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     public void sendVerificationMail(String email, String pass, Long id){
-
+        emailSenderService.sendEmail(email, "Shitpost Generator SignUp", "Your registration link is: " + pass + "\n" +
+                "Please verify your account by clicking the link below:\n" +
+                "http://localhost:8080/api/auth/verify?" + pass + "&id=" + id);
     }
 
 // Placeholder
@@ -99,7 +117,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .user(user)
                 .token(accessToken)
                 .tokenType(TokenType.BEARER)
-                .annulled(false)
+                .expired(false)
+                .revoked(false)
                 .build();
         tokenRepository.save(token);
     }
@@ -108,7 +127,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var validTokens = tokenRepository.findAllValidTokenByCustomer(user.getId());
         if(validTokens.isEmpty()) return;
         validTokens.forEach(token -> {
-            token.setAnnulled(true);
+            token.setRevoked(true);
+            token.setExpired(true);
         });
         tokenRepository.saveAll(validTokens);
     }

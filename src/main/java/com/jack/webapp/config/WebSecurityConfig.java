@@ -22,11 +22,11 @@ import java.util.List;
 @EnableWebSecurity
 public class WebSecurityConfig {
     private final AuthenticationProvider authenticationProvider;
-    private final JwtAuthFilter jwtAuthenticationFilter;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     private final LogoutHandler logoutHandler;
 
-    public WebSecurityConfig(AuthenticationProvider authenticationProvider, JwtAuthFilter jwtAuthenticationFilter, LogoutHandler logoutHandler) {
+    public WebSecurityConfig(AuthenticationProvider authenticationProvider, JwtAuthenticationFilter jwtAuthenticationFilter, LogoutHandler logoutHandler) {
         this.authenticationProvider = authenticationProvider;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.logoutHandler = logoutHandler;
@@ -37,7 +37,7 @@ public class WebSecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers("/api/auth/**")
+                        request.requestMatchers("/auth/**")
                                 .permitAll()
                                 .requestMatchers("/api/public")
                                 .permitAll()
@@ -46,6 +46,11 @@ public class WebSecurityConfig {
                                 .anyRequest()
                                 .authenticated()
                         )
+//                .formLogin(login -> login
+//                        .loginPage("/api/auth/login")
+//                        .defaultSuccessUrl("/api/users/me")
+//                        .failureUrl("/api/auth/login?error=true")
+//                )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
@@ -57,10 +62,11 @@ public class WebSecurityConfig {
         return http.build();
     }
 
+    // CORS
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-
+        // Warning: Change this origin to the domain you wish to allow
         configuration.setAllowedOrigins(List.of("http://localhost:8005"));
         configuration.setAllowedMethods(List.of("GET","POST"));
         configuration.setAllowedHeaders(List.of("Authorization","Content-Type"));

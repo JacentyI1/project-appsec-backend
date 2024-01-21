@@ -1,4 +1,4 @@
-package com.jack.webapp.services.impl;
+package com.jack.webapp.services;
 
 import com.jack.webapp.repositories.TokenRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,7 +24,8 @@ public class LogoutService implements LogoutHandler {
         jwt = authHeader.substring(7);
         var storedToken = tokenRepository.findByToken(jwt).orElse(null);
         if (storedToken != null) {
-            storedToken.setAnnulled(true);
+            storedToken.setExpired(true);
+            storedToken.setRevoked(true);
             tokenRepository.save(storedToken);
             SecurityContextHolder.clearContext();
         }

@@ -1,19 +1,20 @@
 package com.jack.webapp.services;
 
-import com.jack.webapp.domain.dto.LoginUserDto;
-import com.jack.webapp.domain.dto.RegisterUserDto;
+import com.jack.webapp.controllers.authentication.AuthenticationRequest;
+import com.jack.webapp.controllers.authentication.AuthenticationResponse;
 import com.jack.webapp.domain.entities.UserEntity;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 
 public interface AuthenticationService {
 
 
-    UserEntity signup(RegisterUserDto registerUserDto);
+    ResponseEntity<String> signup(UserEntity registerUserDto);
 
-    UserEntity authenticate(LoginUserDto loginUserDto);
+    AuthenticationResponse authenticate(AuthenticationRequest loginUser);
 
     void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException;
 

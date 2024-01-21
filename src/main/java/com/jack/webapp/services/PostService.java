@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface PostService {
 
-    void savePost(PostEntity post);
+//    void savePost(PostEntity post);
 
     boolean isExists(Long post_id);
 

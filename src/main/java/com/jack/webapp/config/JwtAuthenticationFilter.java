@@ -22,7 +22,7 @@ import java.io.IOException;
 
 @Component
 @ComponentScan("com.jack.webapp.services")
-public class JwtAuthFilter extends OncePerRequestFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private HandlerExceptionResolver handlerExceptionResolver;
     @Autowired
@@ -30,28 +30,33 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Autowired
     private UserDetailsService userDetailsService;
 
-//    @Autowired
-//    public JwtAuthFilter(HandlerExceptionResolver handlerExceptionResolver, JwtService jwtService, UserDetailsService userDetailsService) {
-//        this.handlerExceptionResolver = handlerExceptionResolver;
-//        this.jwtService = jwtService;
-//        this.userDetailsService = userDetailsService;
-//    }
-
+    /*
+     * FilterChain is used to invoke the next filter in the chain, or if the calling filter is the last filter in the chain, to invoke the resource at the end of the chain.
+     * This method is called by the container each time a request is received.
+     * */
     @Override
-    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain
+    ) throws ServletException, IOException {
+        // get the authorization header
         final String authHeader = request.getHeader("Authorization");
 
+        // if the authorization header is null or does not start with "Bearer ", then we pass the request to the next filter in the chain
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
         try {
+            // extract the jwt from the authorization header
             final String jwt = authHeader.substring(7);
             final String userEmail = jwtService.extractUsername(jwt);
-
+            // get the authentication object from the security context
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+            // If the user is not authenticated, we load the user details from the database and set the authentication object in the security context
             if (userEmail != null && authentication == null) {
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 

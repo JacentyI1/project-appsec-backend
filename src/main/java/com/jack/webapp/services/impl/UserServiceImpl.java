@@ -5,7 +5,6 @@ import com.jack.webapp.repositories.UserRepository;
 import com.jack.webapp.services.JwtService;
 import com.jack.webapp.services.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +18,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final EmailSenderService emailSenderService;
+    private final EmailSenderServiceImpl emailSenderServiceImpl;
 
     @Override
     public UserEntity save(UserEntity userEntity) {
@@ -58,12 +57,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean verifyUser(Long id, Long postId) {
-        return true;
+    public boolean verifyUser(Long id, Long code) {
+        Optional<UserEntity> userOptional = userRepository.findById(id);
+        if(userOptional.isPresent()){
+            UserEntity user = userOptional.get();
+            if(user.getVerificationCode().equals(code)){
+                user.setActive(true);
+                userRepository.save(user);
+                return true;
+            }
+        }
+        return false;
     }
 
-    @Override
-    public boolean resetPassword(String emailAddress) {
+//    @Override
+//    public boolean resetPassword(String emailAddress) {
 //        try {
 //            Optional<UserEntity> customerOptional = userRepository.findByEmail(emailAddress);
 //            if (customerOptional.isPresent()) {
@@ -86,13 +94,13 @@ public class UserServiceImpl implements UserService {
 //            System.out.println("An unexpected error occurred: " + ex.getMessage());
 //            return false;
 //        }
-        return false;
-    }
+//        return false;
+//    }
 
     private void sendResetPasswordEmail(String emailAddress, JwtService token) {
         String subject = "Reset your Password";
         String message = "Your temporary password is:"+token;
-        emailSenderService.sendMail(emailAddress, subject, message);
+        emailSenderServiceImpl.sendEmail(emailAddress, subject, message);
     }
 
     @Override
@@ -109,6 +117,13 @@ public class UserServiceImpl implements UserService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public UserEntity findOne(String name) {
+        UserEntity user = userRepository.findByEmail(name).orElseThrow(() -> new RuntimeException("User not found"));
+        user.setPassword(null);
+        return user;
     }
 
 
