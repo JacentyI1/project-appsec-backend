@@ -10,12 +10,15 @@ import com.jack.webapp.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
 
+@Log
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -33,9 +36,19 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public  ResponseEntity<AuthenticationResponse> login(@RequestBody LoginUserDto request) throws Exception {
-        return new ResponseEntity<>(authenticationService.authenticate(request), HttpStatus.OK); // map dto to entity & authenticate
-
+    public RedirectView login(@ModelAttribute LoginUserDto request, HttpServletRequest response) throws Exception {
+        AuthenticationResponse authReposponse = authenticationService.authenticate(request);
+        if(authReposponse!=null) {
+//            response.setHeader("Authorization", "Bearer " + authReposponse.getAccessToken());
+//            authReposponse.setAccessToken("Bearer " + authReposponse.getAccessToken());
+//            response.sendRedirect("/api/users/account");
+            response.getSession().setAttribute("user", authReposponse);
+            return new RedirectView("/api/users/account");
+        }
+        return new RedirectView("/login?error");
+//        return new ResponseEntity<>(authenticationService.authenticate(request), HttpStatus.OK); // map dto to entity & authenticate
+//            log.info("authResponse "+authReposponse.getAccessToken());
+//            log.info("response "+response.getHeader("Authorization"));
     }
 
     @PostMapping("/refresh-token")

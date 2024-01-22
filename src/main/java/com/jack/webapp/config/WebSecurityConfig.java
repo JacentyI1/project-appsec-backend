@@ -41,6 +41,10 @@ public class WebSecurityConfig {
                                 .permitAll()
                                 .requestMatchers("/api/public")
                                 .permitAll()
+                                .requestMatchers("/api/users/**")
+                                .authenticated()
+                                .requestMatchers("/api/post/**")
+                                .authenticated()
                                 .requestMatchers("/api/admin/**")
                                 .hasRole(Role.ADMIN.name())
                                 .anyRequest()
@@ -55,7 +59,7 @@ public class WebSecurityConfig {
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(logout ->
-                        logout.logoutUrl("/api/auth/logout")
+                        logout.logoutUrl("/auth/logout")
                                 .addLogoutHandler(logoutHandler)
                                 .logoutSuccessHandler((((request, response, authentication) -> SecurityContextHolder.clearContext())))
                 );

@@ -2,33 +2,57 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>User Account</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            padding: 20px 0;
+        }
+        table {
+            width: 80%;
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
 <body>
-    <h1>User Account</h1>
-    <table>
-        <tr>
-<!--            private String username;-->
-<!--            private String fullName;-->
-<!--            private String email;-->
-<!--            private Date createdAt;-->
-<!--            private Role role;-->
-<!--            private boolean isActive;-->
-            <th>Username</th>
-            <th>Full Name</th>
-            <th>Email</th>
-            <th>Created at</th>
-            <th>Role</th>
-            <th>Active</th>
-        </tr>
-        <tr>
-            <td th:text="${user.username}"></td>
-            <td th:text="${user.fullName}"></td>
-            <td th:text="${user.email}"></td>
-            <td th:text="${user.createdAt}"></td>
-            <td th:text="${user.role}"></td>
-            <td th:text="${user.isActive()}"></td>
-            <!-- Add more cells as needed -->
-        </tr>
-    </table>
+<h1>User Account</h1>
+<script src="../static/auth/userAccount.js"></script>
+<table>
+    <tr>
+        <th>Username</th>
+        <th>Full Name</th>
+        <th>Email</th>
+        <th>Created at</th>
+        <th>Role</th>
+        <th>Active</th>
+    </tr>
+    <tr>
+        <td id="username"></td>
+        <td id="fullName"></td>
+        <td id="email"></td>
+        <td id="createdAt"></td>
+        <td id="role"></td>
+        <td id="isActive"></td>
+    </tr>
+</table>
 </body>
 </html>

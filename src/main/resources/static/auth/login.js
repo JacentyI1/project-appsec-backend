@@ -1,7 +1,7 @@
 function submitForm() {
     var email = document.getElementById("email").value;
     var password = document.getElementById("password").value;
-
+    // var token = document.getElementById("token").value;
     // Send data to the backend
     fetch('/auth/login', {
         method: 'POST',

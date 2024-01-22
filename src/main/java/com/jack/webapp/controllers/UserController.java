@@ -1,55 +1,90 @@
 package com.jack.webapp.controllers;
 
+import com.jack.webapp.controllers.authentication.AuthenticationResponse;
 import com.jack.webapp.domain.dto.LoginUserDto;
 import com.jack.webapp.domain.dto.UserAccountResponseDto;
 import com.jack.webapp.domain.entities.UserEntity;
 import com.jack.webapp.mappers.Mapper;
+import com.jack.webapp.services.JwtService;
 import com.jack.webapp.services.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.java.Log;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
 
 @Log
-@Controller
+@RestController
 @RequestMapping("/api/users")
 public class UserController {
     private final UserService userService;
     private final Mapper<UserEntity, LoginUserDto> loggedInMapper;
 
     private final Mapper<UserEntity, UserAccountResponseDto> accountMapper;
-    public UserController(UserService userService, Mapper<UserEntity, LoginUserDto> loggedInMapper, Mapper<UserEntity, UserAccountResponseDto> accountMapper) {
+    @Autowired
+    private final JwtService jwtService;
+
+    public UserController(UserService userService, Mapper<UserEntity, LoginUserDto> loggedInMapper, Mapper<UserEntity, UserAccountResponseDto> accountMapper, JwtService jwtService) {
         this.userService = userService;
         this.loggedInMapper = loggedInMapper;
         this.accountMapper = accountMapper;
+        this.jwtService = jwtService;
     }
 
     @GetMapping("/account")
-    public String authenticatedUser(Model model){
-        try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            UserEntity user = (UserEntity) authentication.getPrincipal();
+    public ResponseEntity<UserAccountResponseDto> authenticatedUser(HttpServletRequest request) {
+        // Get the user's information from the session
+        AuthenticationResponse authResponse = (AuthenticationResponse) request.getSession().getAttribute("user");
+        if(authResponse != null) {
+            String email = jwtService.extractUsername(authResponse.getAccessToken());
+            UserEntity user = userService.findOne(email);
+            if (user == null) {
+                throw new UsernameNotFoundException("User not found");
+            }
             UserAccountResponseDto loggedInUser = accountMapper.mapTo(user);
-            model.addAttribute("user", loggedInUser);
-            return "userAccount";
-        } catch (Exception e) {
-            log.info("Access denied. User not found.\n" + "Exception: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null).toString();
+            return new ResponseEntity<>(loggedInUser, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        UserEntity currentUser = (UserEntity) authentication.getPrincipal();
-//        return new ResponseEntity<>(currentUser, HttpStatus.OK);
     }
+
+//    @GetMapping("/account")
+//    public ResponseEntity<UserAccountResponseDto> authenticatedUser(HttpServletRequest request) {
+//        try {
+//            String header = request.getHeader("Authorization");
+//            log.info( "header: " + header);
+//            if(header != null && header.startsWith("Bearer ")) {
+//                log.info( "Got through the header check");
+//                final String jwt = header.substring(7);
+//                final String email = jwtService.extractUsername(jwt); // assuming jwtService is autowired in your controller
+//                UserEntity user = userService.findOne(email);
+//                if (user == null) {
+//                    throw new UsernameNotFoundException("User not found");
+//                }
+//                UserAccountResponseDto loggedInUser = accountMapper.mapTo(user);
+//                return new ResponseEntity<>(loggedInUser, HttpStatus.OK);
+//            } else {
+//                log.info( "Invalid Authorization header");
+//                throw new IllegalArgumentException("Invalid Authorization header");
+//            }
+//        } catch (Exception e) {
+//            log.info( "Exception: " + e.getMessage());
+//            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+//        }
+////        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+////        UserEntity currentUser = (UserEntity) authentication.getPrincipal();
+////        return new ResponseEntity<>(currentUser, HttpStatus.OK);
+//    }
 
 //    @GetMapping("/")
 //    public ResponseEntity<List<UserEntity>> allUsers() {
