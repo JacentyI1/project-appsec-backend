@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/api/admin")
 @RequiredArgsConstructor
 public class AdminController {
     @Autowired
@@ -43,9 +43,9 @@ public class AdminController {
         }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-        @DeleteMapping(path = "/users/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable("id") Long id) {
-        userService.delete(id);
+        @DeleteMapping(path = "/users/{email}")
+    public ResponseEntity<String> deleteUser(@PathVariable("email") String email) {
+        userService.delete(email);
         return new ResponseEntity<>("User deleted. :D",HttpStatus.NO_CONTENT);
     }
 

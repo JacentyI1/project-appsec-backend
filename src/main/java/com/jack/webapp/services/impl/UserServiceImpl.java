@@ -151,5 +151,10 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public void delete(String email) {
+//        userRepository.delete(userRepository.findByEmail(email));
+    }
+
 
 }

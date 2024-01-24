@@ -30,4 +30,6 @@ public interface UserService {
     UserEntity findOne(String name);
 
     boolean resetPassword(String emailAddress);
+
+    void delete(String email);
 }

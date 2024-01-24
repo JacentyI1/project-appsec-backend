@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Messages</title>
+</head>
+<body>
+<div class="messages"></div>
+    <h2>Generate Message</h2>
+    <div>
+        <tr th:each="message : ${messageResponse}">
+            <td th:text="${message.username}"></td>
+            <td th:text="${message.message}"></td>
+        </tr>
+    </div>
+
+</body>
+</html>

@@ -15,5 +15,5 @@ public class PostDto {
 
     private String post;
 
-    private LoginUserDto author;
+//    private LoginUserDto author;
 }

@@ -20,7 +20,7 @@ import java.io.IOException;
 
 @Log
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
     private  final JwtService jwtService;
@@ -37,8 +37,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginUserDto request) throws Exception {
-        AuthenticationResponse authReposponse = authenticationService.authenticate(request);
+    public ResponseEntity<AuthenticationResponse> login(@RequestParam LoginUserDto request) throws Exception {
+        AuthenticationResponse authReposponse = authenticationService.authenticate(loginMapper.mapFrom(request));
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + authReposponse.getAccessToken());
         return new ResponseEntity<>(authReposponse, headers, HttpStatus.OK);

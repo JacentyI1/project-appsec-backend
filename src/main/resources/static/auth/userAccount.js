@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('email').textContent = data.email;
             document.getElementById('createdAt').textContent = data.createdAt;
             document.getElementById('role').textContent = data.role;
-            document.getElementById('isActive').textContent = data.isActive;
+            // document.getElementById('isActive').textContent = data.isActive;
         })
         .catch(error => console.error('Error:', error));
 });

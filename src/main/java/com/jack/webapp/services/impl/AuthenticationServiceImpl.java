@@ -2,7 +2,6 @@ package com.jack.webapp.services.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jack.webapp.controllers.authentication.AuthenticationResponse;
-import com.jack.webapp.domain.dto.LoginUserDto;
 import com.jack.webapp.domain.entities.UserEntity;
 import com.jack.webapp.repositories.TokenRepository;
 import com.jack.webapp.repositories.UserRepository;
@@ -59,7 +58,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return new ResponseEntity<String>("Account created. Check e-mail.", HttpStatus.CREATED);
     }
 
-    public AuthenticationResponse authenticate(LoginUserDto request) {
+    public AuthenticationResponse authenticate(UserEntity request) {
         // authenticate user
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
