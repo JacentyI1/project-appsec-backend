@@ -16,5 +16,8 @@ public class GetRequestController {
         return "login";
     }
 
-
+    @GetMapping("/users")
+    public String usersPage() {
+        return "userAccount";
+    }
 }

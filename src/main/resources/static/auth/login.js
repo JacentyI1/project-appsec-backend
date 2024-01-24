@@ -1,27 +1,27 @@
-function submitForm() {
-    var email = document.getElementById("email").value;
-    var password = document.getElementById("password").value;
-    // var token = document.getElementById("token").value;
-    // Send data to the backend
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    var email = document.getElementById('email').value;
+    var password = document.getElementById('password').value;
+
+    var data = {
+        email: email,
+        password: password
+    };
+
     fetch('/auth/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ email: email, password: password})
+        body: JSON.stringify(data)
     })
-        .then(response => {
-            if(response.ok){
-                return response.json();
-            } else {
-                throw new Error('Error: '+ response.status)
-            }
-        })
+        .then(response => response.json())
         .then(data => {
-            // Handle the response from the backend
+            // Handle the response data here
             console.log(data);
         })
-        .catch(error => {
+        .catch((error) => {
             console.error('Error:', error);
         });
-}
+});

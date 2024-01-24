@@ -28,4 +28,6 @@ public interface UserService {
     boolean updatePassword(String address, String newPass, String confirmPass);
 
     UserEntity findOne(String name);
+
+    boolean resetPassword(String emailAddress);
 }

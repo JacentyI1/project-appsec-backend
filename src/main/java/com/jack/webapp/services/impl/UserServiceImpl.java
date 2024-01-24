@@ -5,6 +5,8 @@ import com.jack.webapp.repositories.UserRepository;
 import com.jack.webapp.services.JwtService;
 import com.jack.webapp.services.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Log
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -124,6 +127,28 @@ public class UserServiceImpl implements UserService {
         UserEntity user = userRepository.findByEmail(name).orElseThrow(() -> new RuntimeException("User not found"));
         user.setPassword(null);
         return user;
+    }
+
+    @Override
+    public boolean resetPassword(String emailAddress) {
+        try {
+            Optional<UserEntity> userOptional = userRepository.findByEmail(emailAddress);
+            if(userOptional.isPresent()) {
+                UserEntity user = userOptional.get();
+                // TODO: send email logic
+
+                return true;
+            } else {
+                log.info("User not found");
+                return false;
+            }
+        }catch (IncorrectResultSizeDataAccessException e) {
+            log.info("Error: Multiple accounts found with the same email address.");
+            return false;
+        } catch (Exception e) {
+            log.info("An unexpected error occurred: " + e.getMessage());
+            return false;
+        }
     }
 
 

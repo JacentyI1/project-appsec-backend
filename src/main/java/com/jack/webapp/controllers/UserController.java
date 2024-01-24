@@ -25,7 +25,7 @@ import java.util.List;
 
 @Log
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/users")
 public class UserController {
     private final UserService userService;
     private final Mapper<UserEntity, LoginUserDto> loggedInMapper;

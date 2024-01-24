@@ -60,19 +60,24 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(LoginUserDto request) {
+        // authenticate user
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
                         request.getPassword()
                 )
         );
+        // get user
         UserEntity user = userRepository.findByEmail(request.getEmail()).orElseThrow();
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
+        // revoke all tokens
         revokeAllCustomerTokens(user);
+        // save token
         saveUserToken(user, jwtToken);
+        // return response
         return AuthenticationResponse.builder()
-//                .email(user.getEmail())
+                .email(user.getEmail())
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
                 .build();

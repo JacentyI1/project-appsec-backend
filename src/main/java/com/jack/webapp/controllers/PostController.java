@@ -27,7 +27,7 @@ public class PostController {
         this.postService = postService;
     }
 
-    @PostMapping("/api/post/create-post")
+    @PostMapping("/api/posts/create-post")
     public ResponseEntity<String> runGoScript() {
         try {
             //
