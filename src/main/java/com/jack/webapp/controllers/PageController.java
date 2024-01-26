@@ -7,15 +7,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class PageController {
-    @GetMapping("/auth/signup")
-    public String signupPage() {
-        return "signup";
-    }
-
-    @GetMapping("/auth/login")
-    public String loginPage() {
-        return "login";
-    }
+//    @GetMapping("/auth/signup")
+//    public String signupPage() {
+//        return "signup";
+//    }
+//
+//    @GetMapping("/auth/login")
+//    public String loginPage() {
+//        return "login";
+//    }
 
 //    @GetMapping("/users")
 //    public String userPage() {
