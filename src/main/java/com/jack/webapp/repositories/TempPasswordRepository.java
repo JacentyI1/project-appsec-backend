@@ -7,6 +7,11 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Optional;
 
 public interface TempPasswordRepository extends JpaRepository<TempPassword, Long> {
+    @Query(value = """
+            select t from TempPassword t inner join UserEntity u\s
+            on t.user.id = u.id\s
+            where u.id = :id and (t.expired = false and t.revoked = false)\s
+            """)
     TempPassword findValidTokenByUser(Long id);
     @Query(value = """
             select t from TempPassword t inner join UserEntity u\s
