@@ -13,7 +13,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 
     public void sendEmail(String toEmail, String subject, String body) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("appsecproject@gmail.com");
+        message.setFrom("appsecprojectemail@gmail.com");
         message.setTo(toEmail);
         message.setText(body);
         message.setSubject(subject);
