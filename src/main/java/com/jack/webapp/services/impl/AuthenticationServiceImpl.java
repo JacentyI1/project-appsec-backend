@@ -56,7 +56,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         userRepository.save(user);
 
     // uncomment when email service works xd
-//        sendVerificationMail(user.getEmail(), user.getVerificationCode(), user.getId());
+        sendVerificationMail(user.getEmail(), user.getVerificationCode(), user.getId());
         return new ResponseEntity<String>("Account created. Check e-mail.", HttpStatus.CREATED);
     }
 
@@ -83,7 +83,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         emailSenderService.sendEmail(email, "Random Post Generator SignUp",
                 "Your registration link is: " + pass + "\n" +
                 "Please verify your account by clicking the link below:\n" +
-                "http://plsdonthackme/api/auth/verify?"
+                "http://localhost:8080/api/auth/verify?"
                         + "code=" + pass + "&id=" + id);
     }
 
