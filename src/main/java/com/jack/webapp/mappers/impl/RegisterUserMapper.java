@@ -1,6 +1,6 @@
 package com.jack.webapp.mappers.impl;
 
-import com.jack.webapp.domain.dto.RegisterUserDto;
+import com.jack.webapp.domain.requests.RegisterRequestDto;
 import com.jack.webapp.domain.entities.UserEntity;
 import com.jack.webapp.mappers.Mapper;
 import org.modelmapper.ModelMapper;
@@ -9,7 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RegisterUserMapper implements Mapper<UserEntity, RegisterUserDto> {
+public class RegisterUserMapper implements Mapper<UserEntity, RegisterRequestDto> {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -20,12 +20,12 @@ public class RegisterUserMapper implements Mapper<UserEntity, RegisterUserDto> {
     }
 
     @Override
-    public RegisterUserDto mapTo(UserEntity userEntity) {
-        return modelMapper.map(userEntity, RegisterUserDto.class);
+    public RegisterRequestDto mapTo(UserEntity userEntity) {
+        return modelMapper.map(userEntity, RegisterRequestDto.class);
     }
 
     @Override
-    public UserEntity mapFrom(RegisterUserDto registerUserDto) {
-        return modelMapper.map(registerUserDto, UserEntity.class);
+    public UserEntity mapFrom(RegisterRequestDto registerRequestDto) {
+        return modelMapper.map(registerRequestDto, UserEntity.class);
     }
 }

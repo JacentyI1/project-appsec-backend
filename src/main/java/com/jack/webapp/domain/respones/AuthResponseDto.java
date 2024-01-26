@@ -1,4 +1,4 @@
-package com.jack.webapp.controllers.authentication;
+package com.jack.webapp.domain.respones;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -10,13 +10,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationResponse {
-    @JsonProperty("email")
-    private String email;
+public class AuthResponseDto {
 
     @JsonProperty("access_token")
     private String accessToken;
-
 
     @JsonProperty("refresh_token")
     private String refreshToken;

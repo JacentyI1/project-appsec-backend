@@ -1,4 +1,4 @@
-package com.jack.webapp.controllers.authentication;
+package com.jack.webapp.domain.requests;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationRequest {
-    private String emailAddress;
-    String password;
+public class VerificationRequestDto {
+    private Long id;
 }
