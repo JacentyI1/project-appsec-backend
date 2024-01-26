@@ -21,15 +21,14 @@ public interface UserService {
 
     void delete(Long id);
 
-    boolean verifyUser(Long id, Long postId);
-
-//    boolean resetPassword(String emailAddress);
+    boolean verifyUser(Long id, String postId);
 
     boolean updatePassword(String address, String newPass, String confirmPass);
 
     UserEntity findOne(String name);
 
-    boolean resetPassword(String emailAddress);
 
     void delete(String email);
+
+    boolean resetPassword(String email);
 }

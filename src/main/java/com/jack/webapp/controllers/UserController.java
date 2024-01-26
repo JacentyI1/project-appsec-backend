@@ -1,6 +1,6 @@
 package com.jack.webapp.controllers;
 
-import com.jack.webapp.controllers.authentication.AuthenticationResponse;
+import com.jack.webapp.domain.respones.AuthResponseDto;
 import com.jack.webapp.domain.dto.LoginUserDto;
 import com.jack.webapp.domain.dto.UserAccountResponseDto;
 import com.jack.webapp.domain.entities.UserEntity;
@@ -8,20 +8,12 @@ import com.jack.webapp.mappers.Mapper;
 import com.jack.webapp.services.JwtService;
 import com.jack.webapp.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
-import java.util.List;
 
 @Log
 @RestController
@@ -44,7 +36,7 @@ public class UserController {
     @GetMapping("/account")
     public ResponseEntity<UserAccountResponseDto> authenticatedUser(HttpServletRequest request) {
         // Get the user's information from the session
-        AuthenticationResponse authResponse = (AuthenticationResponse) request.getSession().getAttribute("user");
+        AuthResponseDto authResponse = (AuthResponseDto) request.getSession().getAttribute("user");
         if(authResponse != null) {
             String email = jwtService.extractUsername(authResponse.getAccessToken());
             UserEntity user = userService.findOne(email);

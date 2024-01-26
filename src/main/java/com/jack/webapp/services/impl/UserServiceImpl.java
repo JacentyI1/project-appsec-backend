@@ -1,6 +1,8 @@
 package com.jack.webapp.services.impl;
 
+import com.jack.webapp.domain.entities.TempPassword;
 import com.jack.webapp.domain.entities.UserEntity;
+import com.jack.webapp.repositories.TempPasswordRepository;
 import com.jack.webapp.repositories.UserRepository;
 import com.jack.webapp.services.JwtService;
 import com.jack.webapp.services.UserService;
@@ -10,9 +12,11 @@ import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +26,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailSenderServiceImpl emailSenderServiceImpl;
+    private final TempPasswordRepository tempRepository;
 
     @Override
     public UserEntity save(UserEntity userEntity) {
@@ -60,7 +65,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean verifyUser(Long id, Long code) {
+    public boolean verifyUser(Long id, String code) {
         Optional<UserEntity> userOptional = userRepository.findById(id);
         if(userOptional.isPresent()){
             UserEntity user = userOptional.get();
@@ -73,34 +78,7 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
-//    @Override
-//    public boolean resetPassword(String emailAddress) {
-//        try {
-//            Optional<UserEntity> customerOptional = userRepository.findByEmail(emailAddress);
-//            if (customerOptional.isPresent()) {
-//                UserEntity user = customerOptional.get();
-//
-//                String tempPassword = generateTempPassword();
-//                String hashedTempPassword = passwordEncoder.encode(tempPassword);
-//                saveTemporaryPassword(hashedTempPassword, user);
-//                userRepository.save(user);
-//                sendResetPasswordEmail(emailAddress, tempPassword);
-//                return true;
-//            } else {
-//                System.out.println("Customer not found");
-//                return false;
-//            }
-//        } catch (IncorrectResultSizeDataAccessException ex) {
-//            System.out.println("Error: Multiple accounts found with the same email address.");
-//            return false;
-//        } catch (Exception ex) {
-//            System.out.println("An unexpected error occurred: " + ex.getMessage());
-//            return false;
-//        }
-//        return false;
-//    }
-
-    private void sendResetPasswordEmail(String emailAddress, JwtService token) {
+    private void sendResetPasswordEmail(String emailAddress, String token) {
         String subject = "Reset your Password";
         String message = "Your temporary password is:"+token;
         emailSenderServiceImpl.sendEmail(emailAddress, subject, message);
@@ -129,32 +107,58 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    @Override
-    public boolean resetPassword(String emailAddress) {
-        try {
-            Optional<UserEntity> userOptional = userRepository.findByEmail(emailAddress);
-            if(userOptional.isPresent()) {
-                UserEntity user = userOptional.get();
-                // TODO: send email logic
-
-                return true;
-            } else {
-                log.info("User not found");
-                return false;
-            }
-        }catch (IncorrectResultSizeDataAccessException e) {
-            log.info("Error: Multiple accounts found with the same email address.");
-            return false;
-        } catch (Exception e) {
-            log.info("An unexpected error occurred: " + e.getMessage());
-            return false;
-        }
-    }
 
     @Override
     public void delete(String email) {
 //        userRepository.delete(userRepository.findByEmail(email));
     }
 
+    @Override
+    public boolean resetPassword(String email) {
+        try {
+            Optional<UserEntity> customerOptional = userRepository.findByEmail(email);
+            if (customerOptional.isPresent()) {
+                UserEntity userEntity = customerOptional.get();
+
+                String tempPassword = generateTempPassword();
+                String hashedTempPassword = passwordEncoder.encode(tempPassword);
+                saveTemporaryPassword(hashedTempPassword, userEntity);
+                userRepository.save(userEntity);
+                sendResetPasswordEmail(email, tempPassword);
+                return true;
+            } else {
+                log.info("Customer not found");
+                return false;
+            }
+        } catch (IncorrectResultSizeDataAccessException ex) {
+            log.info("Error: Multiple accounts found with the same email address.");
+            return false;
+        } catch (Exception ex) {
+            log.info("An unexpected error occurred: " + ex.getMessage());
+            return false;
+        }
+    }
+
+    private void saveTemporaryPassword(String hashedTempPassword, UserEntity userEntity) {
+        TempPassword tempPassword = new TempPassword();
+        tempPassword.setToken(hashedTempPassword);
+        tempPassword.setUser(userEntity);
+        tempPassword.setRevoked(false);
+        tempPassword.setExpired(false);
+        tempRepository.save(tempPassword);
+    }
+
+    private String generateTempPassword() {
+        String characters = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789!@#$%^&*()";
+        Random random = new SecureRandom();
+        StringBuilder tempPassword = new StringBuilder();
+
+        for (int i = 0; i < 6; i++) {
+            int index = random.nextInt(characters.length());
+            tempPassword.append(characters.charAt(index));
+        }
+
+        return tempPassword.toString();
+    }
 
 }

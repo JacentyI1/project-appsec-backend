@@ -1,8 +1,10 @@
 package com.jack.webapp.services.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jack.webapp.controllers.authentication.AuthenticationResponse;
+import com.jack.webapp.domain.entities.TempPassword;
+import com.jack.webapp.domain.respones.AuthResponseDto;
 import com.jack.webapp.domain.entities.UserEntity;
+import com.jack.webapp.repositories.TempPasswordRepository;
 import com.jack.webapp.repositories.TokenRepository;
 import com.jack.webapp.repositories.UserRepository;
 import com.jack.webapp.services.AuthenticationService;
@@ -37,49 +39,80 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final TokenRepository tokenRepository;
     private final EmailSenderService emailSenderService;
     private final PasswordEncoder passwordEncoder;
+    private TempPasswordRepository tempRepository;
 
 
     @Override
     public ResponseEntity<String> signup(UserEntity user) {
-        Optional<UserEntity> existingUser = userRepository.findByEmail(user.getEmail()); // check if user exists
-        if(existingUser.isPresent()) return new ResponseEntity<String>("An account with this email already exists.", HttpStatus.CONFLICT); // return conflict if user exists
 
-        user.setPassword(passwordEncoder.encode(user.getPassword())); // encode password
-        user.setCreatedAt(new Date()); // set created at
+        Optional<UserEntity> existingUser = userRepository.findByEmail(user.getEmail());
+        if(existingUser.isPresent()) return new ResponseEntity<String>("An account with this email already exists.", HttpStatus.CONFLICT);
 
-        String verificationCode = jwtService.buildToken(new HashMap<>(), user, -1L); // build token
-        user.setVerificationCode(verificationCode); // set verification code
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setCreatedAt(new Date());
+        String verificationToken = jwtService.buildToken(new HashMap<>(), user, -1L);
+        user.setVerificationCode(verificationToken);
+        user.setActive(false);
+        userRepository.save(user);
 
-        user.setActive(false); // set active to false
-
-        userRepository.save(user); // save user
-        // uncomment when email service works xd
+    // uncomment when email service works xd
 //        sendVerificationMail(user.getEmail(), user.getVerificationCode(), user.getId());
         return new ResponseEntity<String>("Account created. Check e-mail.", HttpStatus.CREATED);
     }
 
-    public AuthenticationResponse authenticate(UserEntity request) {
-        // authenticate user
+    public AuthResponseDto authenticate(UserEntity request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
                         request.getPassword()
                 )
         );
-        // get user
         UserEntity user = userRepository.findByEmail(request.getEmail()).orElseThrow();
-        var jwtToken = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(user);
-        // revoke all tokens
-        revokeAllCustomerTokens(user);
-        // save token
+        String jwtToken = jwtService.generateToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
+        revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
-        // return response
-        return AuthenticationResponse.builder()
-                .email(user.getEmail())
+        return AuthResponseDto.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
                 .build();
+    }
+
+
+    public void sendVerificationMail(String email, String pass, Long id){
+        emailSenderService.sendEmail(email, "Random Post Generator SignUp",
+                "Your registration link is: " + pass + "\n" +
+                "Please verify your account by clicking the link below:\n" +
+                "http://plsdonthackme/api/auth/verify?"
+                        + "code=" + pass + "&id=" + id);
+    }
+
+    @Override
+    public boolean verifyTempPassword(String email, String password) {
+        Optional<UserEntity> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent()) {
+            UserEntity user = userOptional.get();
+            TempPassword passwd = tempRepository.findValidTokenByUser(user.getId());
+            if (passwd != null && passwordEncoder.matches(password, passwd.token)) {
+                passwd.setRevoked(true);
+                tempRepository.save(passwd);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean validChange(String emailAddress, String token) {
+        Optional<UserEntity> userEntityOptional = userRepository.findByEmail(emailAddress);
+        if (userEntityOptional.isPresent()) {
+            UserEntity user = userEntityOptional.get();
+            TempPassword passwd = tempRepository.findAgainValid(user.getId());
+            passwd.used = true;
+            tempRepository.save(passwd);
+            return passwordEncoder.matches(token, passwd.token);
+        }
+        return false;
     }
 
     @Override
@@ -94,9 +127,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             var user = this.userRepository.findByEmail(email).orElseThrow();
             if(jwtService.isTokenValid(refreshToken, user)) {
                 var accessToken = jwtService.generateToken(user);
-                revokeAllCustomerTokens(user);
+                revokeAllUserTokens(user);
                 saveUserToken(user, accessToken);
-                var authResponse = AuthenticationResponse.builder()
+                var authResponse = AuthResponseDto.builder()
                         .accessToken(accessToken)
                         .refreshToken(refreshToken)
                         .build();
@@ -105,22 +138,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
     }
 
-    public void sendVerificationMail(String email, String pass, Long id){
-        emailSenderService.sendEmail(email, "Shitpost Generator SignUp", "Your registration link is: " + pass + "\n" +
-                "Please verify your account by clicking the link below:\n" +
-                "http://localhost:8080/api/auth/verify?" + pass + "&id=" + id);
-    }
-
-// Placeholder
-    @Override
-    public boolean verifyUser(Long id, Long postId) {
-        return userService.verifyUser(id, postId);
-    }
-
-    private void saveUserToken(UserEntity user, String accessToken) {
+    private void saveUserToken(UserEntity user, String jwtToken) {
         var token = Token.builder()
                 .user(user)
-                .token(accessToken)
+                .token(jwtToken)
                 .tokenType(TokenType.BEARER)
                 .expired(false)
                 .revoked(false)
@@ -128,7 +149,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         tokenRepository.save(token);
     }
 
-    private void revokeAllCustomerTokens(UserEntity user) {
+    private void revokeAllUserTokens(UserEntity user) {
         var validTokens = tokenRepository.findAllValidTokenByCustomer(user.getId());
         if(validTokens.isEmpty()) return;
         validTokens.forEach(token -> {
