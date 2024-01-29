@@ -7,9 +7,7 @@ import com.jack.webapp.services.PostService;
 import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -18,6 +16,8 @@ import java.util.stream.Collectors;
 
 @Log
 @RestController
+@RequestMapping("/api/posts")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class PostController {
     private Mapper<PostEntity, PostDto> postMapper;
     private PostService postService;
@@ -27,7 +27,7 @@ public class PostController {
         this.postService = postService;
     }
 
-    @PostMapping("/api/posts/create-post")
+    @PostMapping("/create-post")
     public ResponseEntity<String> runGoScript() {
         try {
             //
@@ -48,7 +48,7 @@ public class PostController {
         }
     }
 
-    @GetMapping("/api/posts")
+    @GetMapping("/list-posts")
     public ResponseEntity<List<PostDto>> listPosts(){
         List<PostEntity> posts = postService.findAll();
         return new ResponseEntity<>(posts.stream().map(postMapper::mapTo).collect(Collectors.toList()), HttpStatus.OK);

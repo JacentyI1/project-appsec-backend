@@ -48,6 +48,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Optional<UserEntity> existingUser = userRepository.findByEmail(user.getEmail());
         if(existingUser.isPresent()) return new ResponseEntity<String>("An account with this email already exists.", HttpStatus.CONFLICT);
 
+//        user.setFullName(user.getFullName());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setCreatedAt(new Date());
         String verificationToken = jwtService.buildToken(new HashMap<>(), user, -1L);
@@ -72,6 +73,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String refreshToken = jwtService.generateRefreshToken(user);
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
+//        AuthenticationC
         return AuthResponseDto.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
@@ -83,8 +85,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         emailSenderService.sendEmail(email, "Random Post Generator SignUp",
                 "Your registration link is: " + pass + "\n" +
                 "Please verify your account by clicking the link below:\n" +
-                "http://localhost:8080/api/auth/verify?"
-                        + "code=" + pass + "&id=" + id);
+                "http://localhost:8080/api/auth/verify?" +
+                        "code=" + pass + "&id=" + id);
     }
 
     @Override

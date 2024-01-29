@@ -1,5 +1,6 @@
 package com.jack.webapp.repositories;
 
+import com.jack.webapp.domain.entities.UserEntity;
 import com.jack.webapp.token.Token;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,4 +17,5 @@ public interface TokenRepository extends JpaRepository<Token, Long> {
     List<Token> findAllValidTokenByCustomer(Long id);
 
     Optional<Token> findByToken(String token);
+
 }

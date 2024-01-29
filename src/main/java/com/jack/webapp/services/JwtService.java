@@ -39,6 +39,11 @@ public class JwtService {
         return generateToken(new HashMap<>(), userDetails);
     }
 
+
+    public String generateRefreshToken(UserDetails userDetails) {
+        return buildToken(new HashMap<>(), userDetails, getExpiration());
+    }
+
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return buildToken(extraClaims, userDetails, getExpiration());
     }
@@ -52,6 +57,14 @@ public class JwtService {
     }
 
     public String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, Long expiration) {
+        if ( expiration < 0 ){
+            return Jwts.builder()
+                    .setClaims(extraClaims)
+                    .setSubject(userDetails.getUsername())
+                    .setIssuedAt(new Date(System.currentTimeMillis()))
+                    .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                    .compact();
+        }
         return Jwts.builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
@@ -126,9 +139,5 @@ public class JwtService {
     }
     public Long getRefresh(){
         return Long.valueOf(env.getProperty("application.security.jwt.refresh-token.expiration"));
-    }
-
-    public String generateRefreshToken(UserEntity user) {
-        return buildToken(new HashMap<>(), user, getRefresh());
     }
 }

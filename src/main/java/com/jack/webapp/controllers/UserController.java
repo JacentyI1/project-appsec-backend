@@ -10,14 +10,17 @@ import com.jack.webapp.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 @Log
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class UserController {
     private final UserService userService;
     private final Mapper<UserEntity, LoginUserDto> loggedInMapper;
@@ -26,6 +29,7 @@ public class UserController {
     @Autowired
     private final JwtService jwtService;
 
+
     public UserController(UserService userService, Mapper<UserEntity, LoginUserDto> loggedInMapper, Mapper<UserEntity, UserAccountResponseDto> accountMapper, JwtService jwtService) {
         this.userService = userService;
         this.loggedInMapper = loggedInMapper;
@@ -33,50 +37,52 @@ public class UserController {
         this.jwtService = jwtService;
     }
 
+//    @GetMapping("/account")
+//    public ResponseEntity<?> authenticatedUser(HttpServletRequest request) {
+//        // Get the user's information from the session
+//        AuthResponseDto authResponse = (AuthResponseDto) request.getSession().getAttribute("user");
+//        if(authResponse != null) {
+//            String email = jwtService.extractUsername(authResponse.getAccessToken());
+//            UserEntity user = userService.findOne(email);
+//            if (user == null) {
+//                throw new UsernameNotFoundException("User not found");
+//            }
+//            UserAccountResponseDto loggedInUser = accountMapper.mapTo(user);
+//            return new ResponseEntity<>(loggedInUser, HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+//        }
+//    }
+
     @GetMapping("/account")
-    public ResponseEntity<UserAccountResponseDto> authenticatedUser(HttpServletRequest request) {
-        // Get the user's information from the session
-        AuthResponseDto authResponse = (AuthResponseDto) request.getSession().getAttribute("user");
-        if(authResponse != null) {
-            String email = jwtService.extractUsername(authResponse.getAccessToken());
-            UserEntity user = userService.findOne(email);
-            if (user == null) {
-                throw new UsernameNotFoundException("User not found");
+    public ResponseEntity<UserAccountResponseDto> authenticatedUser(HttpServletRequest request, @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
+        try {
+//            String header = request.getHeader("Authorization");
+
+//            log.info( "header: " + authorization);
+            if(authorization != null && authorization.startsWith("Bearer ")) {
+//                log.info( "Got through the header check");
+                final String jwt = authorization.substring(7);
+                final String email = jwtService.extractUsername(jwt); // assuming jwtService is autowired in your controller
+                UserEntity user = userService.findOne(email);
+                if (user == null) {
+                    throw new UsernameNotFoundException("User not found");
+                }
+                UserAccountResponseDto loggedInUser = accountMapper.mapTo(user);
+                log.info( "loggedInUser: " + loggedInUser.getUsername());
+                return new ResponseEntity<>(loggedInUser, HttpStatus.OK);
+            } else {
+                log.info( "Invalid Authorization header");
+                throw new IllegalArgumentException("Invalid Authorization header");
             }
-            UserAccountResponseDto loggedInUser = accountMapper.mapTo(user);
-            return new ResponseEntity<>(loggedInUser, HttpStatus.OK);
-        } else {
+        } catch (Exception e) {
+            log.info( "Exception: " + e.getMessage());
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        UserEntity currentUser = (UserEntity) authentication.getPrincipal();
+//        return new ResponseEntity<>(currentUser, HttpStatus.OK);
     }
-
-//    @GetMapping("/account")
-//    public ResponseEntity<UserAccountResponseDto> authenticatedUser(HttpServletRequest request) {
-//        try {
-//            String header = request.getHeader("Authorization");
-//            log.info( "header: " + header);
-//            if(header != null && header.startsWith("Bearer ")) {
-//                log.info( "Got through the header check");
-//                final String jwt = header.substring(7);
-//                final String email = jwtService.extractUsername(jwt); // assuming jwtService is autowired in your controller
-//                UserEntity user = userService.findOne(email);
-//                if (user == null) {
-//                    throw new UsernameNotFoundException("User not found");
-//                }
-//                UserAccountResponseDto loggedInUser = accountMapper.mapTo(user);
-//                return new ResponseEntity<>(loggedInUser, HttpStatus.OK);
-//            } else {
-//                log.info( "Invalid Authorization header");
-//                throw new IllegalArgumentException("Invalid Authorization header");
-//            }
-//        } catch (Exception e) {
-//            log.info( "Exception: " + e.getMessage());
-//            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-//        }
-////        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-////        UserEntity currentUser = (UserEntity) authentication.getPrincipal();
-////        return new ResponseEntity<>(currentUser, HttpStatus.OK);
-//    }
 
 //    @GetMapping("/")
 //    public ResponseEntity<List<UserEntity>> allUsers() {
@@ -151,11 +157,11 @@ public class UserController {
 //        return new ResponseEntity<>(userMapper.mapTo(updatedUser), HttpStatus.OK);
 //    }
 //
-//    @DeleteMapping(path = "/v1/users/{id}")
-//    public ResponseEntity deleteUser(@PathVariable("id") Long id) {
-//        userService.delete(id);
-//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//    }
+    @DeleteMapping(path = "/{email}")
+    public ResponseEntity<?> deleteUser(@PathVariable("email") String email) {
+        userService.delete(email);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 //
 //
 

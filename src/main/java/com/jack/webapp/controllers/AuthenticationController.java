@@ -22,10 +22,10 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
 @Log
-@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class AuthenticationController {
 
     private  final JwtService jwtService;
@@ -59,8 +59,8 @@ public class AuthenticationController {
     }
 
     @GetMapping("/verify")
-    public ResponseEntity<?> verify(@RequestBody Long id, @RequestBody String postId) {
-        if(userService.verifyUser(id, postId)) {
+    public ResponseEntity<?> verify(@RequestParam Long id, @RequestParam String code) {
+        if(userService.verifyUser(id, code)) {
             return new ResponseEntity<>("Account verified seccessfully", HttpStatus.OK);
         }
         return new ResponseEntity<>("Verification failed", HttpStatus.BAD_REQUEST);
