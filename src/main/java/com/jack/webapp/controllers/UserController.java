@@ -57,11 +57,7 @@ public class UserController {
     @GetMapping("/account")
     public ResponseEntity<UserAccountResponseDto> authenticatedUser(HttpServletRequest request, @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
         try {
-//            String header = request.getHeader("Authorization");
-
-//            log.info( "header: " + authorization);
             if(authorization != null && authorization.startsWith("Bearer ")) {
-//                log.info( "Got through the header check");
                 final String jwt = authorization.substring(7);
                 final String email = jwtService.extractUsername(jwt); // assuming jwtService is autowired in your controller
                 UserEntity user = userService.findOne(email);
@@ -79,10 +75,13 @@ public class UserController {
             log.info( "Exception: " + e.getMessage());
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    }
+    //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //        UserEntity currentUser = (UserEntity) authentication.getPrincipal();
 //        return new ResponseEntity<>(currentUser, HttpStatus.OK);
-    }
+
+
+
 
 //    @GetMapping("/")
 //    public ResponseEntity<List<UserEntity>> allUsers() {

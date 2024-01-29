@@ -33,7 +33,7 @@ public class WebConfig implements WebMvcConfigurer {
         config.setAllowedOriginPatterns(Arrays.asList("http://*", "http://localhost:*"));
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
-
+        config.addAllowedOrigin("http://localhost:3000");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
