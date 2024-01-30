@@ -1,0 +1,24 @@
+version: '3.1'
+
+services:
+#  app:
+#    image: pepe991/webapp:latest
+#    ports:
+#      - "25433:8080"
+#    networks:
+#      - weeeee
+  db:
+    image: postgres
+    hostname: webap-db-1
+    ports:
+      - "5432:5432"
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: changemeinprod!
+#    networks:
+#      - weeeee
+
+
+#networks:
+#  weeeee:
+#    driver: bridge
