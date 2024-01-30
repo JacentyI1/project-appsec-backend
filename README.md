@@ -58,6 +58,6 @@ Ctrl+C
 docker-compose down
 ```
 ```
+Please note that you might need to adjust the commands according to your project's specific setup. For example, if the application's ports might be different, 
+edit .config java classes and application.properties to suit said needs.
 ```
-Please note that you might need to adjust the commands according to your project's specific setup. For example, the application's port might be different, or there might be additional services that need to be started with Docker Compose.
-
