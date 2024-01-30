@@ -1,5 +1,6 @@
 package com.jack.webapp.services.impl;
 
+import com.jack.webapp.config.DatabaseInitlzr;
 import com.jack.webapp.domain.entities.TempPassword;
 import com.jack.webapp.domain.entities.UserEntity;
 import com.jack.webapp.repositories.TempPasswordRepository;
@@ -26,7 +27,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailSenderServiceImpl emailSenderServiceImpl;
-    private final TempPasswordRepository tempRepository;
+    private final TempPasswordRepository tempRepository;;
 
     @Override
     public UserEntity save(UserEntity userEntity) {
