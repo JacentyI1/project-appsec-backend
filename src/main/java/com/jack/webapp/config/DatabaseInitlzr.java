@@ -22,7 +22,10 @@ public class DatabaseInitlzr {
                 admin1.setPassword("verySecurePassword1");
                 admin1.setRole(Role.ADMIN);
                 admin1.setActive(true);
-                userService.save(admin1);
+                if(userService.findOne(admin1.getEmail()).getId()==null){
+                    userService.save(admin1);
+                }
+
 
                 UserEntity admin2 = new UserEntity();
                 admin2.setUsername("PR73M3K");
@@ -31,7 +34,9 @@ public class DatabaseInitlzr {
                 admin2.setPassword("verySecurePassword2");
                 admin2.setRole(Role.ADMIN);
                 admin2.setActive(true);
-                userService.save(admin2);
+                if(userService.findOne(admin2.getEmail()).getId()==null){
+                    userService.save(admin2);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
