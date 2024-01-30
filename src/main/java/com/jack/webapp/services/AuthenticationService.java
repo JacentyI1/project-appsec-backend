@@ -21,4 +21,5 @@ public interface AuthenticationService {
     boolean verifyTempPassword(String email, String password);
 
     boolean validChange(String emailAddress, String token);
+
 }

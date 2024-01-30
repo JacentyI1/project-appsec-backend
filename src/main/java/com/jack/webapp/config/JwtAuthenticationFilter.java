@@ -44,7 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        log.info("doFilterInternal basic");
+//        log.info("doFilterInternal basic");
 //        log.info("request.getServletPath(): " + request.getServletPath());
 //        log.info("request.getRequestURI(): " + request.getRequestURI());
 //        log.info("request.getRequestURL(): " + request.getRequestURL());
@@ -57,7 +57,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        log.info("doFilterInternal advanced");
+//        log.info("doFilterInternal advanced");
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String email;
@@ -65,7 +65,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        log.info("doFilterInternal master");
+//        log.info("doFilterInternal master");
         jwt = authHeader.substring(7);
         email = jwtService.extractEmail(jwt);
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {

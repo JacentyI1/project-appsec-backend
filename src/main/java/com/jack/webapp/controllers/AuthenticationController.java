@@ -108,6 +108,5 @@ public class AuthenticationController {
         }
         return new ResponseEntity<>("Invalid input format", HttpStatus.BAD_REQUEST);
     }
-
 }
 

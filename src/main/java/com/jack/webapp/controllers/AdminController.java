@@ -6,6 +6,7 @@ import com.jack.webapp.domain.entities.UserEntity;
 import com.jack.webapp.mappers.Mapper;
 import com.jack.webapp.services.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 //@CrossOrigin(origins = "http://localhost:3000")
+@Log
 @RestController
 @RequestMapping("/api/admin")
 @CrossOrigin(originPatterns = "http://localhost:3000", maxAge = 3600, allowCredentials = "true")
@@ -35,9 +37,9 @@ public class AdminController {
                 .collect(Collectors.toList()), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/users/{id}")
-    public ResponseEntity<UserAccountResponseDto> getUser(@PathVariable("id") Long id) {
-        Optional<UserEntity> foundUser = userService.findOne(id);
+    @GetMapping(path = "/users/{email}")
+    public ResponseEntity<UserAccountResponseDto> getUser(@PathVariable("email") String email) {
+        Optional<UserEntity> foundUser = Optional.ofNullable(userService.findOne(email));
         return foundUser.map(userEntity -> {
             UserAccountResponseDto userDto = userAccount.mapTo(userEntity);
             return new ResponseEntity<>(userDto, HttpStatus.OK);
@@ -45,9 +47,10 @@ public class AdminController {
     }
 
     @DeleteMapping(path = "/users/{email}")
-    public ResponseEntity<String> deleteUser(@PathVariable("email") String email) {
+    public ResponseEntity<?> deleteUser(@PathVariable("email") String email) {
+        log.info("Deleting user with email: " + email);
         userService.delete(email);
-        return new ResponseEntity<>("User deleted. :D",HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 

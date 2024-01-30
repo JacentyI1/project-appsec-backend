@@ -42,8 +42,8 @@ public class UserController {
     public ResponseEntity<UserAccountResponseDto> authenticatedUser(Principal principal) {
         try {
             UserEntity userEntity = userService.findOne(principal.getName());
-            log.info("userDto: " + userEntity.getEmail());
-            log.info("userDto: " + userEntity.getGamer());
+//            log.info("userDto: " + userEntity.getEmail());
+//            log.info("userDto: " + userEntity.getGamer());
             return new ResponseEntity<>(accountMapper.mapTo(userEntity), HttpStatus.OK);
         } catch (ResourceNotFoundException e) {
             log.info( "Exception: " + e.getMessage());

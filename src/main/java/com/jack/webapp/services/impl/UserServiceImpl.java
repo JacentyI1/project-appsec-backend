@@ -101,8 +101,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserEntity findOne(String name) {
-        UserEntity user = userRepository.findByEmail(name).orElseThrow(() -> new RuntimeException("User not found"));
+    public UserEntity findOne(String email) {
+        UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
         user.setPassword(null);
         return user;
     }

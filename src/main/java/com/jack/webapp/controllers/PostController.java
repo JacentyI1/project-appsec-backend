@@ -44,6 +44,7 @@ public class PostController {
                 return new ResponseEntity<>("Error in executing message-generating script", HttpStatus.INTERNAL_SERVER_ERROR);
             }
         } catch (Exception e) {
+            log.info("Error" + e.getMessage());
             return new ResponseEntity<>("Error in executing message-generating script", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
