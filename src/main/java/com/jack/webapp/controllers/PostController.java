@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Log
 @RestController
 @RequestMapping("/api/posts")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(originPatterns = "http://localhost:3000", maxAge = 3600, allowCredentials = "true")
 public class PostController {
     private Mapper<PostEntity, PostDto> postMapper;
     private PostService postService;

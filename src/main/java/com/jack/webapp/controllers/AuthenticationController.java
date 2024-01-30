@@ -25,7 +25,7 @@ import java.io.IOException;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(originPatterns = "http://localhost:3000", maxAge = 3600, allowCredentials = "true")
 public class AuthenticationController {
 
     private  final JwtService jwtService;
@@ -42,11 +42,11 @@ public class AuthenticationController {
 
     @PostMapping(value = "/login")
     public ResponseEntity<AuthResponseDto> login(@RequestBody LoginUserDto request) throws Exception {
-        AuthResponseDto authReposponse = authenticationService.authenticate(loginMapper.mapFrom(request));
-        if(authReposponse == null) {
+        AuthResponseDto authResponse = authenticationService.authenticate(loginMapper.mapFrom(request));
+        if(authResponse == null) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(authReposponse, HttpStatus.OK);
+        return new ResponseEntity<>(authResponse, HttpStatus.OK);
     }
 
     @PostMapping("/refresh-token")

@@ -44,29 +44,34 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-
-        log.info("doFilterInternal");
-        log.info(request.getServletPath());
-        if(request.getServletPath().contains("/api/auth")) {
+        log.info("doFilterInternal basic");
+//        log.info("request.getServletPath(): " + request.getServletPath());
+//        log.info("request.getRequestURI(): " + request.getRequestURI());
+//        log.info("request.getRequestURL(): " + request.getRequestURL());
+//        log.info("request.getQueryString(): " + request.getQueryString());
+//        log.info("request.getRemoteAddr(): " + request.getRemoteAddr());
+//        log.info("request.getRemoteHost(): " + request.getRemoteHost());
+//        log.info("Headers: " + request.getHeaderNames());
+//        log.info("Authorization: " + request.getHeader("Authorization"));
+        if (request.getServletPath().contains("/api/auth")) {
             filterChain.doFilter(request, response);
             return;
         }
-
+        log.info("doFilterInternal advanced");
         final String authHeader = request.getHeader("Authorization");
-        log.info("Auth header" + (authHeader == null ? "null": authHeader) + " : "+ (authHeader != null ? authHeader.startsWith("Bearer ") : "null"));
-        if(authHeader == null || !authHeader.startsWith("Bearer ")) {
+        final String jwt;
+        final String email;
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
-
-        final String jwt = request.getHeader("Authorization").substring(7);
-        final String email = jwtService.extractUsername(jwt);
-        log.info("JWT: " + jwt);
-        log.info("Email: " + email);
-        if(email != null && SecurityContextHolder.getContext().getAuthentication()==null) {
+        log.info("doFilterInternal master");
+        jwt = authHeader.substring(7);
+        email = jwtService.extractEmail(jwt);
+        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
-            var isTokenValid = tokenRepository.findByToken(jwt).map(t -> !t.isExpired() && !t.isRevoked()).orElse(false);
-            if(jwtService.isTokenValid(jwt, userDetails) && isTokenValid) {
+            var isTokenVaild = tokenRepository.findByToken(jwt).map(t -> !t.isExpired() && !t.isRevoked()).orElse(false);
+            if (jwtService.isTokenValid(jwt, userDetails) && isTokenVaild) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);

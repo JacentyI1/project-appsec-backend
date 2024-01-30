@@ -65,6 +65,11 @@ public class UserEntity implements UserDetails {
         return role.getAuthorities();
     }
 
+
+    public String getGamer() {
+        return username;
+    }
+
     @Override
     public String getUsername() {
         return email;

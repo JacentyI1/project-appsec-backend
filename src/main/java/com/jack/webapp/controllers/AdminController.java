@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 //@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/admin")
+@CrossOrigin(originPatterns = "http://localhost:3000", maxAge = 3600, allowCredentials = "true")
 @RequiredArgsConstructor
 public class AdminController {
     @Autowired

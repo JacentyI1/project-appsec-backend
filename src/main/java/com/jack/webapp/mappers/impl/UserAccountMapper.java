@@ -18,7 +18,9 @@ public class UserAccountMapper implements Mapper<UserEntity, UserAccountResponse
 
     @Override
     public UserAccountResponseDto mapTo(UserEntity user) {
-        return this.modelMapper.map(user, UserAccountResponseDto.class);
+        UserAccountResponseDto accountResponseDto = this.modelMapper.map(user, UserAccountResponseDto.class);
+        accountResponseDto.setUsername(user.getGamer());
+        return accountResponseDto;
     }
 
     @Override

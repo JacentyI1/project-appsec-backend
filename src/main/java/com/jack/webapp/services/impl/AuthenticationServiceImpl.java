@@ -74,6 +74,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
 //        AuthenticationC
+
         return AuthResponseDto.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
@@ -124,7 +125,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         final String email;
         if(authHeader == null || !authHeader.startsWith("Bearer ")) return;
         refreshToken = authHeader.substring(7);
-        email = jwtService.extractUsername(refreshToken);
+        email = jwtService.extractEmail(refreshToken);
         if(email != null) {
             var user = this.userRepository.findByEmail(email).orElseThrow();
             if(jwtService.isTokenValid(refreshToken, user)) {
