@@ -30,15 +30,17 @@ public class PostController {
     @PostMapping("/create-post")
     public ResponseEntity<String> runGoScript() {
         try {
-            //
-            ProcessBuilder processBuilder = new ProcessBuilder("go", "run", "src/main/resources/go/main.go");
+            // Get absolute path of the project
+            String projectPath = new File("").getAbsolutePath();
+    
+            ProcessBuilder processBuilder = new ProcessBuilder("go", "run", projectPath + "/src/main/resources/go/main.go");
             Process process = processBuilder.start();
             int exitCode = process.waitFor();
             if (exitCode == 0) {
-                String filePath = "src/main/resources/go/out.txt";
+                String filePath = projectPath + "/src/main/resources/go/out.txt";
                 String content = new String(Files.readAllBytes(Paths.get(filePath)));
                 log.info("Generated content: "+ content);
-
+    
                 return new ResponseEntity<>("Successfully executed message-generating script", HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Error in executing message-generating script", HttpStatus.INTERNAL_SERVER_ERROR);
