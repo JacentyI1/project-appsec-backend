@@ -45,7 +45,7 @@ To run the tests, use the following command:
 ```bash
 mvn test
 ```
-
+(Don't run tests. There is nothing there.)
 ## Stopping the Application
 
 To stop the application and the database, use the following commands:
