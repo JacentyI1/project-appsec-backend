@@ -18,6 +18,7 @@ public class DatabaseInitlzr {
                 UserEntity admin1 = new UserEntity();
                 admin1.setUsername("J4CK");
                 admin1.setEmail("phantom1@mail.com");
+                admin1.setFullName("Jack Phantom");
                 admin1.setPassword("verySecurePassword1");
                 admin1.setRole(Role.ADMIN);
                 admin1.setActive(true);
@@ -25,6 +26,7 @@ public class DatabaseInitlzr {
 
                 UserEntity admin2 = new UserEntity();
                 admin2.setUsername("PR73M3K");
+                admin2.setFullName("Jhon Phantom");
                 admin2.setEmail("phantom2@mail.com");
                 admin2.setPassword("verySecurePassword2");
                 admin2.setRole(Role.ADMIN);
