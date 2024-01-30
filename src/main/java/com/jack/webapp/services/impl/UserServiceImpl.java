@@ -111,7 +111,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(String email) {
         UserEntity toBeDeletedUser = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
-        userRepository.delete(toBeDeletedUser);
+        userRepository.deleteById(toBeDeletedUser.getId());
     }
 
     @Override
