@@ -31,7 +31,11 @@ public class UserController {
     private final JwtService jwtService;
 
 
-    public UserController(UserService userService, Mapper<UserEntity, LoginUserDto> loggedInMapper, Mapper<UserEntity, UserAccountResponseDto> accountMapper, JwtService jwtService) {
+    public UserController(
+            UserService userService,
+            Mapper<UserEntity, LoginUserDto> loggedInMapper,
+            Mapper<UserEntity, UserAccountResponseDto> accountMapper,
+            JwtService jwtService) {
         this.userService = userService;
         this.loggedInMapper = loggedInMapper;
         this.accountMapper = accountMapper;

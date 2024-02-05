@@ -40,6 +40,7 @@ public class AuthenticationController {
         return authenticationService.signup(signupMapper.mapFrom(registerRequestDto));
     }
 
+
     @PostMapping(value = "/login")
     public ResponseEntity<AuthResponseDto> login(@RequestBody LoginUserDto request) throws Exception {
         AuthResponseDto authResponse = authenticationService.authenticate(loginMapper.mapFrom(request));
